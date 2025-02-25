@@ -1,0 +1,18 @@
+# 📌 frontend의 node_modules 폴더 제외
+frontend/node_modules/
+
+# 📌 환경 변수 파일 제외
+frontend/.env
+frontend/.env.local
+frontend/.env.development
+frontend/.env.production
+
+# 📌 빌드 폴더 제외 (React, Vite 등)
+frontend/dist/
+frontend/build/
+
+# 📌 에디터 설정 제외
+.vscode/
+.idea/
+*.swp
+.DS_Store
