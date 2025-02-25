@@ -1,0 +1,143 @@
+/* ✅ 헤더 스타일 */
+.header {
+  width: 100%;
+  height: 85px;
+  position: relative;
+}
+
+/* ============================= */
+/* 🚀 푸터 스타일 적용 (Figma 디자인 기반) */
+/* ============================= */
+.footer {
+  width: 100%;
+  height: 223.59px;
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+/* ✅ 상단 네비게이션 바 */
+.top-bar {
+  width: 100%;
+  height: 41px;
+  background-color: #c7abfc;
+  border-bottom: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-content {
+  display: flex;
+  gap: 20px;
+  font-size: 12px;
+  font-family: "Sanchez", sans-serif;
+  font-weight: normal;
+}
+
+
+/* ✅ 메인 헤더 */
+.main-header {
+  width: 100%;
+  height: 44px;
+  position: absolute;
+  top: 41px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ✅ 로고 */
+.logo {
+  width: 84px;
+  height: 48px;
+}
+
+/* ✅ 우측 아이콘 */
+.icon-right {
+  width: 21px;
+  height: 31px;
+  position: absolute;
+  right: 30px;
+  top: 10px;
+  background-image: url("data:image/png;base64,...."); /* 아이콘 이미지 */
+  background-size: cover;
+}
+
+/* ✅ 좌측 아이콘 */
+.icon-left {
+  width: 21px;
+  height: 31px;
+  position: absolute;
+  left: 30px;
+  top: 10px;
+  background-image: url("data:image/png;base64,...."); /* 아이콘 이미지 */
+  background-size: cover;
+}
+
+/* ✅ 전체 헤더 스타일 */
+.header {
+  width: 100%;
+  height: 85px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ✅ 상단 보라색 바 */
+.top-bar {
+  width: 100%;
+  height: 41px;
+  background-color: #c7abfc;
+  border-bottom: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-bar-content {
+  display: flex;
+  gap: 20px;
+  font-size: 12px;
+  font-family: 'Sanchez', serif;
+  font-weight: normal;
+  text-align: center;
+  color: black;
+}
+
+/* ✅ 메인 헤더 영역 */
+.main-header {
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  position: relative;
+}
+
+/* ✅ 로고 */
+.logo {
+  width: 84px;
+  height: 48px;
+}
+
+/* ✅ 아이콘 컨테이너 */
+.icons {
+  display: flex;
+  gap: 20px;
+}
+
+.icon-placeholder {
+  width: 21px;
+  height: 31px;
+  background-color: #ddd; /* 아이콘 이미지 대체용 */
+  border-radius: 5px;
+}
