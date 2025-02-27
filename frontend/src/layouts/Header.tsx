@@ -1,5 +1,5 @@
 // src/components/Header.tsx
-import { AppBar, Toolbar, Box, Container, Drawer, IconButton, Typography } from "@mui/material";
+import { AppBar,  Box, Container, Drawer, IconButton, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -12,8 +12,8 @@ const Header = () => {
       {/* 상단 배너 */}
       <Box
         sx={{
-          position: "fixed", // 👈 네비게이션 바와 같은 속성으로 고정
-          zIndex: 100, // 👈 네비게이션 바보다 위에 배치
+          position: "fixed", 
+          zIndex: 100, 
           top: 0,
           left: 0,
           width: "100%",
@@ -39,7 +39,7 @@ const Header = () => {
           zIndex: 99,
           left: 0,
           width: "100%",
-          height: "50px",
+          height: "46px",
           borderBottom: "1px solid #000",
           backgroundColor: "#fff",
           boxShadow: "none",
@@ -92,13 +92,13 @@ const Header = () => {
             />
           </Box>
 
-          {/* 검색 & 장바구니 버튼 */}
+          {/* 검색 & 유저 버튼 */}
           <Box sx={{ position: "absolute", right: "10px", display: "flex", gap: 2, alignItems: "center" }}>
             <IconButton onClick={() => navigate("/search")} sx={{ padding: 0 }}>
               <img src="/images/돋보기.png" alt="검색" style={{ width: "22px", height: "30px", cursor: "pointer" }} />
             </IconButton>
-            <IconButton onClick={() => navigate("/cart")} sx={{ padding: 0 }}>
-              <img src="/images/장바구니.png" alt="장바구니" style={{ width: "22px", height: "30px", cursor: "pointer" }} />
+            <IconButton onClick={() => navigate("/user")} sx={{ padding: 0 }}>
+              <img src="/images/user.png" alt="유저" style={{ width: "25px", height: "23px", cursor: "pointer" }} />
             </IconButton>
           </Box>
         </Container>
