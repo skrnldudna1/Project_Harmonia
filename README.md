@@ -1,3 +1,9 @@
+## Project_Harmonia
+
+<img style="height:2rem" src="https://img.shields.io/badge/mysql-4479A1?logo=mysql&logoColor=white"> <img style="height:2rem" src="https://img.shields.io/badge/springboot-6DB33F?logo=springboot&logoColor=white" > <img style="height:2rem" src="https://img.shields.io/badge/react-61DAFB?logo=react&logoColor=black" >
+
+<img style="height:2rem" src="https://img.shields.io/badge/github-181717?logo=github&logoColor=white"> <img style="height:2rem" src="https://img.shields.io/badge/git-F05032?logo=git&logoColor=white"> <img style="height:2rem" src="https://img.shields.io/badge/figma-F24E1E?logo=figma&logoColor=white">
+
 ![image](https://github.com/user-attachments/assets/76ba43ae-c7da-483a-87a7-38ddc762e840)
 
 ## 🌈color
@@ -7,8 +13,9 @@
   </a>
 </p>
 
+-------------------------------------------
 
-## 개인 프로젝트
+피그마
 [🔗 Figma ](https://www.figma.com/design/UVGtQDz975hQcHSyMdoUZd/harmonia?node-id=0-1&p=f&t=TjOwEylCGXqWP3zF-0)
 
 ### 🧷 참고 사이트
