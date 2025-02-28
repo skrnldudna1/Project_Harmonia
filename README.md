@@ -17,3 +17,10 @@
 
 ### 🧷 참고 사이트
 [#crepe ](https://crepe.cm/) ,　 [#9hope ](https://m.9hope.kr/)
+
+
+
+## 🎨Photoshop
+- slider
+  ![A1](https://github.com/user-attachments/assets/417bc993-c176-4904-8caa-0298e791e627)
+
