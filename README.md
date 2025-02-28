@@ -1,10 +1,7 @@
 ## Project_Harmonia
 
-<img style="height:2rem" src="https://img.shields.io/badge/mysql-4479A1?logo=mysql&logoColor=white"> <img style="height:2rem" src="https://img.shields.io/badge/springboot-6DB33F?logo=springboot&logoColor=white" > <img style="height:2rem" src="https://img.shields.io/badge/react-61DAFB?logo=react&logoColor=black" >
-
-<img style="height:2rem" src="https://img.shields.io/badge/github-181717?logo=github&logoColor=white"> <img style="height:2rem" src="https://img.shields.io/badge/git-F05032?logo=git&logoColor=white"> <img style="height:2rem" src="https://img.shields.io/badge/figma-F24E1E?logo=figma&logoColor=white">
-
-![image](https://github.com/user-attachments/assets/76ba43ae-c7da-483a-87a7-38ddc762e840)
+![image](https://github.com/user-attachments/assets/6b329919-e04b-483e-9e45-6e3331424cfd)
+![image](https://github.com/user-attachments/assets/8f67a932-872b-420f-91ed-847823638061)
 
 ## 🌈color
 <p align="center">
