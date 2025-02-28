@@ -1,50 +1,44 @@
-import { Card, CardMedia, CardContent, Typography, IconButton } from "@mui/material";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"; // ❤️ 좋아요 아이콘 추가
+import { Card, CardMedia, Box } from "@mui/material";
 
-const ProductCard = ({ post }) => {
+const ProductCard = ({ post, isLiked, toggleLike }) => {
   return (
-    <Card
-      className="product-card"
-      sx={{
-        marginBottom: "16px",
-        boxShadow: 3,
-        borderRadius: 2,
-        transition: "transform 0.3s",
-        "&:hover": { transform: "scale(1.05)" },
-        
-      }}
-      
-    >
-      {/* 📷 상품 이미지 */}
-      <CardMedia
-        component="img"
-        image={post.image}
-        alt={post.title}
+    <Box className="product-card-wrapper">
+      <Card
+        className="product-card"
         sx={{
-            width: "462px", // 고정 너비
-            height: "616px", //고정 높이
-            objectFit: "cover",
+          marginBottom: "16px",
+          boxShadow: 3,
+          borderRadius: 2,
+          transition: "transform 0.3s",
+          "&:hover": { transform: "scale(1.05)" },
         }}
+      >
+        {/* 📷 상품 이미지 */}
+        <CardMedia
+          component="img"
+          image={post.image}
+          alt={post.title}
+          sx={{
+            width: "100%", // 고정 너비
+            height: "616px", // 고정 높이
+            objectFit: "cover",
+          }}
         />
+      </Card>
 
-      {/* ❤️ 좋아요 버튼 */}
-      <IconButton className="like-button" sx={{ position: "absolute", bottom: 10, right: 10 }}>
-        <FavoriteBorderIcon />
-      </IconButton>
-
-      {/* 📝 상품 정보 */}
-      <CardContent className="product-info">
-        <Typography variant="h6" sx={{ fontWeight: "bold", textAlign: "center" }}>
-          {post.title}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" textAlign="center">
-          [크림·당일배송]
-        </Typography>
-        <Typography variant="h6" fontWeight="bold" textAlign="center">
-          29,000원
-        </Typography>
-      </CardContent>
-    </Card>
+      {/* 상품 정보 + 좋아요 버튼 (product-overlay 내부) */}
+      <div className="product-overlay">
+        <div className="product-info">
+          <h4 className="product-title">{post.title}</h4>
+          <p className="product-id">{post.id} (님)</p>
+          <h4 className="product-price">꽃</h4>
+        </div>
+        <div 
+          className={`like-button ${isLiked ? "liked" : ""}`} 
+          onClick={toggleLike}
+        ></div>
+      </div>
+    </Box>
   );
 };
 

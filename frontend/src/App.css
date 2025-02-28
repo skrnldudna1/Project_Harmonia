@@ -199,18 +199,24 @@
 }
 
 
-#gallery-container {
-  width: 100%;
-  max-width: 1200px;
-  padding: 20px 0;
-  margin: 0 auto;
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4열 */
+  grid-template-rows: repeat(4, auto);  /* 4행 */
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  margin-bottom: 0 !important; 
 }
+
+
 
 
 /* 상품 카드 */
 .product-card {
-  width: 315px; /* ✅ Masonry 내에서 동일한 너비 */
-  height: 420px; /* ✅ Masonry 내에서 동일한 높이 */
+  width: 400px; /* ✅ Masonry 내에서 동일한 너비 */
+  height: 550px; /* ✅ Masonry 내에서 동일한 높이 */
   border-radius: 10px;
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -223,48 +229,106 @@
   transform: scale(1.03);
 }
 
+.product-card-wrapper {
+  position: relative;
+  width: 400px;
+  height: 550px;
+  overflow: hidden;
+  border-radius: 10px;
+}
 
-/* ✅ 카드 내부 이미지 크기 고정 */
+/* ===================================상품 내부 텍스트================================== */
+.product-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 10%; /* 높이 */
+  background: rgba(230, 178, 186, 0.6); /* ✅ 반투명 배경 */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  color: black;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  padding: 4px; /* 내부 여백 */
+  overflow: hidden; /* 박스 내부에 내용 유지 */
+  font-size: 11px; 
+  text-align: center;
+}
+
+.product-card-wrapper:hover .product-overlay {
+  opacity: 1;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%; 
+  overflow: hidden; /* 글씨가 넘치지 않도록 */
+  text-align: center;
+  font-size: 10px; /* 텍스트 크기 조정 */
+  line-height: 1.2; /* 줄 간격 조절 */
+}
+
+.product-title {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 1px;
+}
+
+.product-id {
+  font-size: 10px;
+  font-weight: normal;
+  margin-bottom: 1px;
+  max-width: 90%;
+  white-space: normal; /* ✅ 줄바꿈 허용 */
+}
+
+.product-price {
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 1px;
+}
+
+
+
+/* ===========================카드 내부 이미지 크기 고정========================= */
 .product-card img {
   width: 100%;
   height: 100%;
   object-fit: cover; /* 이미지 비율 유지하며 크기 맞춤 */
 }
 
-/* ❤️ 좋아요 버튼 */
+/* =================================좋아요 버튼=============================== */
 .like-button {
   position: absolute;
-  bottom: 15px;
-  right: 15px;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  bottom: 16px;
+  right: 16px;
+  width: 25px;
+  height: 25px;
+  background: url("../images/like.png") no-repeat center center;
+  background-size: contain;
   cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
+  transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+  align-self: center;
 }
 
-.like-button:hover {
-  background: rgba(255, 0, 0, 0.8);
+.like-button.liked {
+  background: url("../images/like_filled.png") no-repeat center center;
+  background-size: contain;
   transform: scale(1.1);
 }
 
 
-/* ✅ Masonry 갤러리 */
-.gallery {
-  display: flex;
-  justify-content: center; /* 중앙 정렬 */
-  width: 100%;
-  max-width: 1200px; /* ✅ Masonry 최대 너비 */
-  margin: 0 auto;
-  flex-wrap: wrap;
+.like-button:hover {
+  transform: scale(1.1); /* 마우스 오버 시 크기 확대 */
 }
 
-/* ✅ Masonry 컬럼 */
-.gallery-column {
-  padding-left: 16px;
-  background-clip: padding-box;
-}
+
+
+
