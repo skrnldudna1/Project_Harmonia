@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import MainLayout from "./layouts/MainLayout"; // 공통 레이아웃
 import MainPage from "./component/main"; // 메인 페이지
+import MainSlider from "./component/main/MainSlider";
 
 const queryClient = new QueryClient();
 
@@ -19,5 +20,6 @@ function App() {
     </QueryClientProvider>
   );
 }
+
 
 export default App;
