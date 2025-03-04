@@ -1,6 +1,9 @@
 import { Card, CardMedia, Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ post, isLiked, toggleLike }) => {
+  const navigate = useNavigate();
+
   return (
     <Box className="product-card-wrapper">
       <Card
@@ -10,8 +13,10 @@ const ProductCard = ({ post, isLiked, toggleLike }) => {
           boxShadow: 3,
           borderRadius: 2,
           transition: "transform 0.3s",
+          cursor: "pointer", // 🔹 클릭 가능한 UI로 변경
           "&:hover": { transform: "scale(1.05)" },
         }}
+        onClick={() => navigate(`/product/${post.id}`)} // 🔹 클릭 시 이동
       >
         {/* 📷 상품 이미지 */}
         <CardMedia
@@ -30,12 +35,15 @@ const ProductCard = ({ post, isLiked, toggleLike }) => {
       <div className="product-overlay">
         <div className="product-info">
           <h4 className="product-title">{post.title}</h4>
-          <p className="product-id">{post.id} (님)</p>
+          <p className="product-id">{post.name} (님)</p>
           <h4 className="product-price">꽃</h4>
         </div>
         <div 
           className={`like-button ${isLiked ? "liked" : ""}`} 
-          onClick={toggleLike}
+          onClick={(e) => {
+            e.stopPropagation(); // 🔹 좋아요 버튼 클릭 시 상세 이동 방지
+            toggleLike();
+          }}
         ></div>
       </div>
     </Box>

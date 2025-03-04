@@ -1,0 +1,238 @@
+/* 📂 src/pages/MyPage.module.css */
+
+
+
+/* ✅ 전체 컨테이너: 화면을 넓게 사용 */
+.myPageContainer {
+    width: 100%; /* 🔹 전체 화면을 사용 */
+    max-width: 1500px; /* 🔹 너무 커지는 것 방지 */
+    margin: auto;
+    text-align: center;
+    padding-top: 80px; /* 헤더 고려 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+
+
+
+ /* ============================프로필 컨테이너=========================== */
+.profileContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* 프로필 이미지 */
+  .profileAvatar {
+    width: 150px !important; /* 🔹 기존보다 확대 */
+    height: 150px !important;
+    border: 5px solid #C599B6; /* 테두리 유지 */
+  }
+  
+  /* 설정 아이콘*/
+  .settingsButton {
+    margin-top: 10px;
+    font-size: 28px; /* 🔹 기존보다 크게 */
+  }
+
+
+  /* ✅좋아요 & 팔로잉 탭 - 3x3 그리드 */
+  .gridContainer {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 1400px; /* 🔹 넓게 설정 */
+  }
+  
+  /* 카드 크기 */
+  .gridItem {
+    width: 100%;
+    height: 350px;
+    border-radius: 8px;
+    border: 1px solid #FFC0CB;
+    border-radius: 8px;
+    background-color: #fdf2f8;
+  }
+
+/* ✅ 팔로잉 탭 - 타임라인 스타일 */
+.timelineContainer {
+    margin-top: 20px;
+    width: 90%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .timelinePost {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .timelineImage {
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+    border-radius: 8px;
+  }
+
+
+  /* ===========================내 피드 컨테이너=========================== */
+.feedContainer {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* 피드 개별 포스트 */
+  .feedPost {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  /* 피드 이미지 */
+  .feedImage {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  
+  
+
+
+  /* ==================================탭키========================== */
+
+  /* 탭 컨테이너 간격 추가 */
+.tabContainer {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+  }
+  
+
+  .tabButton {
+    width: 130px !important;  /* 🔹 크기 강제 적용 */
+    padding: 12px 0 !important;
+    font-weight: bold !important;
+    font-size: 16px !important;
+    border: 2px solid #FCABBF !important;
+    background-color: white !important;
+    color: rgb(78, 78, 78) !important;
+    cursor: pointer;
+    transition: all 0.3s ease !important;
+  }
+  
+  /* 탭 버튼 공통 스타일 */
+  .tabButton {
+    width: 130px; /* 🔹 버튼 크기 */
+    padding: 12px 0;
+    font-weight: bold;
+    font-size: 16px;
+    border: 2px solid #FCABBF;
+    background-color: white;
+    color: rgb(78, 78, 78);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  /* 활성화된 탭 */
+  .activeTab {
+    background-color: #FCABBF !important;
+    color: white !important;
+  }
+  
+  /* 호버 효과 */
+  .tabButton:hover {
+    background-color: #FCABBF !important;
+    color: white !important;
+  }
+  
+  /* 첫 번째 버튼 왼쪽 라운드 */
+  .tabButton:first-child {
+    border-radius: 20px 0 0 20px;
+  }
+  
+  /* 마지막 버튼 오른쪽 라운드 */
+  .tabButton:last-child {
+    border-radius: 0 20px 20px 0;
+  }
+  
+  /* 가운데 버튼 */
+  .tabButton:not(:first-child):not(:last-child) {
+    border-left: none;
+    border-right: none;
+  }
+  
+
+
+
+  /* ===============================갤러리 컨테이너 ================================*/
+
+.galleryContainer {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* 앨범 섹션 */
+.albumSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  padding: 10px;
+  border-bottom: 2px solid #FFC0CB;
+}
+
+.addButton {
+  background-color: #FF69B4 !important;
+  color: white !important;
+  border-radius: 10px;
+}
+
+/* 앨범 미리보기 */
+.albumPreview {
+  width: 100%;
+  max-width: 600px;
+  height: 300px;
+  margin-top: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #FFC0CB;
+}
+
+.albumImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 3x3 그리드 (좋아요 & 팔로잉) */
+.gridContainer {
+  margin-top: 20px;
+  width: 90%;
+  max-width: 1200px;
+}
+
+.gridItem {
+  width: 100%;
+  height: 250px;
+  border-radius: 8px;
+  background-color: #fdf2f8;
+  background-position: center;
+  background-repeat: no-repeat;
+}

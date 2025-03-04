@@ -88,7 +88,9 @@ const Header = () => {
                 height: "auto",
                 objectFit: "contain",
                 paddingTop: "10px",
+                cursor: "pointer", //클릭
               }}
+              onClick={() => navigate("/")} //main 페이지 이동
             />
           </Box>
 
