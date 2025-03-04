@@ -1,4 +1,4 @@
-import { Container, Box } from "@mui/material";
+import { Container, Box, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import MainVideo from "./main/MainVideo"; // 배경 비디오 추가
 import ProductCard from "./GalleryContainer/ProductCard"; // 상품 카드
@@ -45,35 +45,62 @@ const MainPage = () => {
       {/* 🎬 배경 비디오 */}
       <MainVideo />
 
-      {/* 4행 4열 갤러리 */}
+      {/* 메인 컨텐츠 */}
       <div id="main-content">
         <div className="card-container">
           <Container maxWidth="lg">
             {loaded ? (
-              <div className="grid-container">
-                {dummyPosts.slice(0, 16).map((post) => (
-                  <ProductCard
-                    key={post.id}
-                    post={post}
-                    isLiked={!!likedPosts[post.id]}
-                    toggleLike={() => toggleLike(post.id)}
-                  />
-                ))}
-              </div>
+              <>
+                {/* 🔹 상단 4x2 갤러리 */}
+                <div className="grid-container">
+                  {dummyPosts.slice(0, 8).map((post) => (
+                    <ProductCard
+                      key={post.id}
+                      post={post}
+                      isLiked={!!likedPosts[post.id]}
+                      toggleLike={() => toggleLike(post.id)}
+                    />
+                  ))}
+                </div>
+
+                {/* 🔘 MORE 버튼 */}
+                <Box sx={{ textAlign: "center", mt: 2, mb: 2 }}>
+                  <button className="more-button">MORE +</button>
+                </Box>
+
+                {/* 🎡 이미지 슬라이더 */}
+                <Box sx={{ width: "100%", display: "flex", justifyContent: "center", mb: 4 }}>
+                  <MainSlider />
+                </Box>
+
+                {/* text */}
+                <Box sx={{ textAlign: "center", my: 3, px: 2 }}>
+                  <Typography variant="h5" sx={{ fontWeight: "bold", color: "#333" }}>
+                  Illustration
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: "#666", mt: 1 }}>
+                  イラスト
+                  </Typography>
+                </Box>
+
+
+                {/* 🔹 추가된 하단 4x2 갤러리 */}
+                  <div className="grid-container bottom-section">
+                    {dummyPosts.slice(9, 17).map((post) => (
+                      <ProductCard
+                        key={post.id}
+                        post={post}
+                        isLiked={!!likedPosts[post.id]}
+                        toggleLike={() => toggleLike(post.id)}
+                      />
+                    ))}
+                  </div>
+
+              </>
             ) : (
               <p>로딩 중...</p>
             )}
           </Container>
-
-          {/* 🔘 MORE 버튼 */}
-          <Box sx={{ textAlign: "center", mt: 2, mb: 2 }}>
-            <button className="more-button">MORE +</button>
-          </Box>
-
-          {/* 🎡 이미지 슬라이더 (✅ grid-container 바로 아래로 이동) */}
-          <Box sx={{ width: "100%", mt: "0px !important", display: "flex", justifyContent: "center" }}>
-            <MainSlider />
-          </Box>
         </div>
       </div>
     </Box>
