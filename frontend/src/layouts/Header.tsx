@@ -1,11 +1,40 @@
 // src/components/Header.tsx
 import { AppBar,  Box, Container, Drawer, IconButton, Typography } from "@mui/material";
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false); // 사이드 메뉴 상태
+  const [user, setUser] = useState(null);
+  
+  // 로그인 여부 확인 (새로고침 시 유지)
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const response = await axios.get("/api/auth/me", { withCredentials: true });
+        setUser(response.data);
+      } catch (error) {
+        console.log("로그인 정보 없음");
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
+  // 로그아웃 함수
+  const handleLogout = async () => {
+    try {
+      await axios.post("/api/auth/logout", {}, { withCredentials: true });
+      alert("로그아웃 성공!");
+      setUser(null);
+      navigate("/login");
+    } catch (error) {
+      console.error("로그아웃 실패");
+    }
+  };
+
 
   return (
     <>
@@ -107,21 +136,57 @@ const Header = () => {
       </AppBar>
 
       {/* 사이드 메뉴 (드로어) */}
-      <Drawer anchor="left" open={menuOpen} onClose={() => setMenuOpen(false)}>
-        <Box sx={{ width: 250, padding: "20px", fontFamily: "serif" }}>
-          <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: "10px" }}>MENU</Typography>
-          <Box component="ul" sx={{ listStyle: "none", padding: 0, margin: 0 }}>
+<Drawer anchor="left" open={menuOpen} onClose={() => setMenuOpen(false)}>
+  <Box sx={{ width: 250, padding: "20px", fontFamily: "serif" }}>
+    <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: "10px" }}>MENU</Typography>
+    
+    <Box component="ul" sx={{ listStyle: "none", padding: 0, margin: 0 }}>
+      {/* 🔑 로그인 버튼을 제일 위로 이동 */}
+      <Box component="li" sx={{ marginBottom: "10px", textAlign: "center" }}>
+      {user ? (
+                <>
+                  <Typography sx={{ fontSize: "14px", color: "#333", marginBottom: "5px" }}>
+                    👋 {user.username}님
+                  </Typography>
+                  <button
+                    onClick={handleLogout}
+                    style={{
+                      all: "unset",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                      fontSize: "16px",
+                      display: "inline-block",
+                      color: "red",
+                    }}
+                  >
+                    🚪 Logout
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => navigate("/login")}
+                  style={{
+                    all: "unset",
+                    cursor: "pointer",
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                    display: "inline-block",
+                  }}
+                >
+                  🔑 Login
+                </button>
+              )}
+            </Box>
+
+            {/* 메뉴 리스트 */}
             <Box component="li" sx={{ marginBottom: "10px" }}>
-              <button onClick={() => navigate("/")} style={{ all: "unset", cursor: "pointer" }}>🏠 Home</button>
+              <button onClick={() => navigate("/join")} style={{ all: "unset", cursor: "pointer" }}>Join</button>
             </Box>
             <Box component="li" sx={{ marginBottom: "10px" }}>
-              <button onClick={() => navigate("/search")} style={{ all: "unset", cursor: "pointer" }}>📰 피드</button>
+              <button onClick={() => navigate("/mypage")} style={{ all: "unset", cursor: "pointer" }}>My page</button>
             </Box>
             <Box component="li" sx={{ marginBottom: "10px" }}>
-              <button onClick={() => navigate("/cart")} style={{ all: "unset", cursor: "pointer" }}>✏️ 만들기</button>
-            </Box>
-            <Box component="li" sx={{ marginBottom: "10px" }}>
-              <button onClick={() => navigate("/profile")} style={{ all: "unset", cursor: "pointer" }}>💬 커뮤니티</button>
+              <button onClick={() => navigate("/order")} style={{ all: "unset", cursor: "pointer" }}>Order</button>
             </Box>
           </Box>
         </Box>

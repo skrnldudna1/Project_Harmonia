@@ -4,12 +4,12 @@ server:
 spring:
   data:
     rest:
-      basePath: /api 
+      basePath: /api
   devtools:
     livereload:
-      enabled: true # ???? LiveReload ???
+      enabled: true  # LiveReload 활성화
     restart:
-      enabled: true  # ?? ?? ? ?????? ?? ???
+      enabled: true  # 코드 수정 시 자동 재시작
   main:
     banner-mode: "off"
   application:
@@ -19,17 +19,31 @@ spring:
     url: jdbc:mysql://localhost:3306/project_harmonia
     username: project_harmonia
     password: 7070
+
+  # ✅ CORS 설정 추가 (spring.web.cors)
+  web:
+    cors:
+      allowed-origins:
+        - "http://localhost:3000"
+      allowed-methods:
+        - "*"
+      allowed-headers:
+        - "*"
+      allow-credentials: true
+
   jpa:
     properties:
       hibernate:
         format_sql: true
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update  # ✅ 테이블 자동 업데이트 설정
 
 logging:
   level:
     org:
+      mybatis: DEBUG  # MyBatis SQL 로그 확인
+      springframework.jdbc: DEBUG  # JDBC 로그 확인
       thymeleaf: DEBUG
       hibernate:
         SQL: INFO

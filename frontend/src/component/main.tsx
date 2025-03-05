@@ -9,6 +9,21 @@ import MainSlider from "./main/MainSlider"; // 슬라이더
 const MainPage = () => {
   const [loaded, setLoaded] = useState(false);
   const [likedPosts, setLikedPosts] = useState({});
+  const [user, setUser] = useState(null);
+
+  // 로그인 여부 확인 (새로고침 시 유지)
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const response = await axios.get("/api/auth/me", { withCredentials: true });
+        setUser(response.data);
+      } catch (error) {
+        console.log("로그인 정보 없음");
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
 
   useEffect(() => {
     let loadedImages = 0;
