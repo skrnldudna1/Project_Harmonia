@@ -1,103 +1,146 @@
-import { useState } from "react";
-import { Box, Typography, Avatar, Grid, Button, IconButton } from "@mui/material";
-import { Add, Settings, MailOutline, Link, Upload } from "@mui/icons-material";
+import { useState, useEffect } from "react";
+import { Box, Typography, Avatar, Grid, Button, IconButton, TextField, Modal } from "@mui/material";
+import { Settings, Upload } from "@mui/icons-material";
+import axios from "axios";
 import styles from "./MyPage.module.css";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../component/AuthProvider"; // ✅ useAuth 추가
 
-// 🔹 내가 업로드한 게시물 (피드)
-const myFeed = [
-  { id: 1, image: "/images/sample1.jpg", date: "2025-03-04T12:30:00Z" },
-  { id: 2, image: "/images/sample2.jpg", date: "2025-03-03T10:00:00Z" },
-  { id: 3, image: "/images/sample3.jpg", date: "2025-03-02T14:20:00Z" }
-];
-
-const likedPosts = [
-  { id: 1, image: "/images/sample1.jpg", date: "2025-03-04T12:30:00Z" },
-  { id: 2, image: "/images/sample2.jpg", date: "2025-03-03T10:00:00Z" }
-];
-
-const followingPosts = [
-  { id: 4, user: "친구1", image: "/images/sample4.jpg", date: "2025-03-04T14:00:00Z" },
-  { id: 5, user: "친구2", image: "/images/sample5.jpg", date: "2025-03-03T15:30:00Z" }
-];
+const API_URL = "http://localhost:8094/api/auth";
+const SERVER_URL = "http://localhost:8094";
 
 const MyPage = () => {
+  const navigate = useNavigate();
+  const { user, setUser } = useAuth(); // ✅ useAuth에서 유저 정보 가져오기
+  const [userData, setUserData] = useState(user);
+  const [newNickname, setNewNickname] = useState(user?.nickname || "");
   const [tabValue, setTabValue] = useState(0);
+  const [myFeed, setMyFeed] = useState([]);
+  const [likedPosts, setLikedPosts] = useState([]);
+  const [followingPosts, setFollowingPosts] = useState([]);
+  const [previewImg, setPreviewImg] = useState(user?.profileImg ? `${SERVER_URL}${user.profileImg}` : "/images/default-profile.png");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [openModal, setOpenModal] = useState(false);
 
-  // 피드 추가
-const handleAddPost = (event) => {
-    const file = event.target.files[0];
+  // ✅ user 정보가 변경될 때 userData 갱신
+  useEffect(() => {
+    setUserData(user);
+    setNewNickname(user?.nickname || "");
+    setPreviewImg(user?.profileImg ? `${SERVER_URL}${user.profileImg}` : "/images/default-profile.png");
+  }, [user]);
+
+  // ✅ 마이페이지 데이터 가져오기
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    axios.get(`${API_URL}/me`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }, // ✅ 토큰 추가
+    })
+      .then(res => setUserData(res.data))
+      .catch(() => navigate("/login"));
+  }, [user, navigate]);
+
+  // ✅ 프로필 사진 변경 미리보기
+  const handleProfileImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      const newPost = {
-        id: myFeed.length + 1,
-        image: imageUrl,
-        date: new Date().toISOString()
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImg(reader.result as string);
       };
-      setMyFeed([newPost, ...myFeed]); // 최신순으로 정렬되도록 추가
+      reader.readAsDataURL(file);
+      setSelectedFile(file);
+    }
+  };
+
+  // ✅ 변경 사항 저장 (닉네임 & 프로필 사진)
+  const handleSaveChanges = async () => {
+    try {
+      if (!userData?.id) {
+          alert("사용자 정보를 찾을 수 없습니다.");
+          return;
+      }
+
+      const token = localStorage.getItem("token"); // ✅ 토큰 가져오기
+      if (!token) {
+          alert("로그인이 필요합니다.");
+          navigate("/login");
+          return;
+      }
+
+      let updatedUser = { ...userData };
+
+      // ✅ 닉네임 변경 요청
+      if (newNickname !== userData.nickname) {
+        const nicknameResponse = await axios.put(
+            `${API_URL}/${userData.id}/nickname`,
+            { nickname: newNickname },
+            {
+                headers: { Authorization: `Bearer ${token}` }, // ✅ JWT 포함
+            }
+        );
+        updatedUser.nickname = nicknameResponse.data.nickname;
+    }
+
+      // ✅ 프로필 사진 변경 요청
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+
+        const profileResponse = await axios.post(`${API_URL}/${userData.id}/profile-img`, formData, {
+          headers: { 
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // ✅ 토큰 추가
+          },
+        });
+
+        updatedUser.profileImg = profileResponse.data.profileImg;
+      }
+
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setPreviewImg(updatedUser.profileImg ? `${SERVER_URL}${updatedUser.profileImg}` : "/images/default-profile.png");
+
+      alert("변경 사항이 저장되었습니다.");
+      setOpenModal(false);
+    } catch (error) {
+      console.error("변경 저장 실패:", error);
+      alert("변경을 저장하는 중 오류가 발생했습니다.");
     }
   };
 
   return (
     <Box className={styles.myPageContainer}>
-      
-      {/* 🔹 프로필 & 액션 버튼 */}
       <Box className={styles.profileSection}>
         <Box className={styles.profileContainer}>
-          <Avatar src="/images/profile.png" className={styles.profileAvatar} />
-          <Typography variant="h4" mt={1}>사용자명</Typography>
+          <Avatar
+            src={userData?.profileImg ? `${SERVER_URL}${userData.profileImg}` : "/images/default-profile.png"}
+            className={styles.profileAvatar}
+          />
+          <Typography variant="h5">{userData?.nickname || userData?.username}</Typography>
           <Typography variant="body1" color="gray">팔로잉 1 | 팔로워 5.4K</Typography>
-          <IconButton className={styles.settingsButton}>
+          <IconButton className={styles.settingsButton} onClick={() => setOpenModal(true)}>
             <Settings sx={{ color: "#FF69B4" }} />
           </IconButton>
         </Box>
-        <Box className={styles.actionButtons}>
-          <IconButton className={styles.actionIcon}><MailOutline /></IconButton>
-          <IconButton className={styles.actionIcon}><Link /></IconButton>
-          <IconButton className={styles.actionIcon}><Upload /></IconButton>
-        </Box>
       </Box>
 
-      {/* 🔹 탭 메뉴 */}
-      <Box className={styles.tabContainer}>
-        <Button className={`${styles.tabButton} ${tabValue === 0 ? styles.activeTab : ""}`} onClick={() => setTabValue(0)}>피드</Button>
-        <Button className={`${styles.tabButton} ${tabValue === 1 ? styles.activeTab : ""}`} onClick={() => setTabValue(1)}>좋아요</Button>
-        <Button className={`${styles.tabButton} ${tabValue === 2 ? styles.activeTab : ""}`} onClick={() => setTabValue(2)}>팔로잉</Button>
-      </Box>
-
-      {/* 🔹 내 피드 탭 (내가 업로드한 사진만 보이도록) */}
-      {tabValue === 0 && (
-        <Grid container spacing={2} className={styles.gridContainer}>
-          {[...myFeed].sort((a, b) => new Date(b.date) - new Date(a.date)).map((post) => (
-            <Grid item xs={4} key={post.id}>
-              <Box className={styles.gridItem} sx={{ backgroundImage: `url(${post.image})`, backgroundSize: "cover" }} />
-            </Grid>
-          ))}
-        </Grid>
-      )}
-
-      {/* 🔹 좋아요 탭 (좋아요한 게시물 최신순 정렬) */}
-      {tabValue === 1 && (
-        <Grid container spacing={2} className={styles.gridContainer}>
-          {[...likedPosts].sort((a, b) => new Date(b.date) - new Date(a.date)).map((post) => (
-            <Grid item xs={4} key={post.id}>
-              <Box className={styles.gridItem} sx={{ backgroundImage: `url(${post.image})`, backgroundSize: "cover" }} />
-            </Grid>
-          ))}
-        </Grid>
-      )}
-
-      {/* 🔹 팔로잉 탭 (팔로잉한 사람들의 타임라인) */}
-      {tabValue === 2 && (
-        <Box className={styles.timelineContainer}>
-          {[...followingPosts].sort((a, b) => new Date(b.date) - new Date(a.date)).map((post) => (
-            <Box key={post.id} className={styles.timelinePost}>
-              <Typography variant="body2" color="gray">{post.user} 님이 게시물을 올렸습니다.</Typography>
-              <img src={post.image} alt="팔로잉 이미지" className={styles.timelineImage} />
-            </Box>
-          ))}
+      <Modal open={openModal} onClose={() => setOpenModal(false)}>
+        <Box className={styles.modalContainer}>
+          <Typography className={styles.modalTitle}>프로필 수정</Typography>
+          <Avatar src={previewImg} className={styles.previewAvatar} sx={{ width: 220, height: 220, margin: "0 auto", mb: 2 }} />
+          <input type="file" accept="image/*" onChange={handleProfileImageUpload} hidden id="profile-upload" />
+          <label htmlFor="profile-upload" className={styles.uploadButton}>
+            <Upload sx={{ mr: 1 }} />
+            사진 변경
+          </label>
+          <TextField fullWidth className={styles.modalInput} label="닉네임 변경" value={newNickname} onChange={(e) => setNewNickname(e.target.value)} variant="outlined" sx={{ mt: 3 }} />
+          <button className={styles.modalButton} onClick={handleSaveChanges}>변경 완료</button>
         </Box>
-      )}
-
+      </Modal>
     </Box>
   );
 };
