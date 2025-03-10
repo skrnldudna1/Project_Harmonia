@@ -4,7 +4,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addCar } from '../api/carapi';
+import { addCar } from '../api/auth';
 import { Car } from '../types';
 import CarDialogContent from './CarDialogContent';
 import { Button } from '@mui/material';

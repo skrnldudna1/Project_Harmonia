@@ -2,7 +2,7 @@
 
 
 
-/* ✅ 전체 컨테이너: 화면을 넓게 사용 */
+/* 전체 컨테이너: 화면을 넓게 사용 */
 .myPageContainer {
     width: 100%; /* 🔹 전체 화면을 사용 */
     max-width: 1500px; /* 🔹 너무 커지는 것 방지 */
@@ -236,3 +236,99 @@
   background-position: center;
   background-repeat: no-repeat;
 }
+
+
+/* =====================================설정 모달 =============================== */
+
+/* ✅ 모달 컨테이너 (크기 조절) */
+.modalContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+  padding: 40px;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* ✅ 프로필 미리보기 (크기 조절 가능) */
+.previewAvatar {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: 3px solid #ff69b4;
+  margin-bottom: 20px;
+}
+
+/* ✅ 닉네임 입력 필드 */
+.modalInput {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 18px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.modalInput:focus {
+  border-color: #ff69b4;
+}
+
+/* ✅ 파일 업로드 버튼 */
+.uploadButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 14px;
+  font-size: 18px;
+  background-color: #f3f3f3;
+  border-radius: 10px;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.uploadButton:hover {
+  background-color: #ddd;
+}
+
+/* ✅ 변경 완료 버튼 */
+.modalButton {
+  width: 100%;
+  padding: 16px;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 12px;
+  background-color: #ff69b4;
+  color: #fff;
+  cursor: pointer;
+  border: none;
+  transition: background 0.3s ease;
+  margin-top: 20px;
+}
+
+.modalButton:hover {
+  background-color: #e6579b;
+}
+
+/* ✅ 애니메이션 효과 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -55%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+

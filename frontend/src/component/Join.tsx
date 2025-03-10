@@ -14,17 +14,26 @@ const Join = () => {
 
   // 회원가입 요청
   const handleSignup = async () => {
-    console.log("입력된 회원가입 정보:" , user);
-    try {
-        const response = await axios.post("http://localhost:8094/api/auth/signup", user, {
-            withCredentials: true,
-        });
-        alert(response.data);
-        navigate("/login");
-    } catch (error) {
-        alert("회원가입 실패! 다시 시도해주세요.");
-    }
+     // 닉네임이 비어 있으면 username을 기본값으로 설정
+     const userData = {
+      ...user,
+      nickname: user.nickname || user.username, // ✅ 닉네임이 없으면 username으로 설정
+  };
+
+  console.log("입력된 회원가입 정보:", JSON.stringify(userData));  
+
+  try {
+      const response = await axios.post("http://localhost:8094/api/auth/signup", userData, {
+          headers: { "Content-Type": "application/json" },
+      });
+      alert(response.data);
+      navigate("/login");
+  } catch (error) {
+      console.error("회원가입 실패:", error.response ? error.response.data : error.message);
+      alert("회원가입 실패! 다시 시도해주세요.");
+  }
 };
+
 
   return (
     <Container maxWidth="xs">
@@ -67,6 +76,16 @@ const Join = () => {
           margin="normal"
           onChange={handleChange}
         />
+
+        <TextField
+          fullWidth
+          label="닉네임 (선택 사항)"
+          name="nickname"
+          variant="outlined"
+          margin="normal"
+          onChange={handleChange}
+        />
+
 
         <Button
           fullWidth
