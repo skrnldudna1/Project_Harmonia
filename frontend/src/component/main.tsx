@@ -5,25 +5,13 @@ import ProductCard from "./GalleryContainer/ProductCard"; // 상품 카드
 import { dummyPosts } from "../data/posts"; // 샘플 데이터
 import "../App.css"; // 스타일 적용
 import MainSlider from "./main/MainSlider"; // 슬라이더
+import { useAuth } from "./AuthProvider";
 
 const MainPage = () => {
   const [loaded, setLoaded] = useState(false);
   const [likedPosts, setLikedPosts] = useState({});
-  const [user, setUser] = useState(null);
-
-  // 로그인 여부 확인 (새로고침 시 유지)
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      try {
-        const response = await axios.get("/api/auth/me", { withCredentials: true });
-        setUser(response.data);
-      } catch (error) {
-        console.log("로그인 정보 없음");
-      }
-    };
-
-    checkLoginStatus();
-  }, []);
+  const { user, setUser } = useAuth();
+  
 
   useEffect(() => {
     let loadedImages = 0;

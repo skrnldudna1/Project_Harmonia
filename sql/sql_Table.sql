@@ -1,3 +1,4 @@
+
 -- 회원정보 (회원가입 및 로그인 처리)
 CREATE TABLE users (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -42,6 +43,24 @@ CREATE TABLE likes (
 );
 
 
+-- 갤러리 앨범 | 유저가 만든 앨범
+CREATE TABLE gallery (
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id     BIGINT NOT NULL,
+    name        VARCHAR(100) NOT NULL,  -- 앨범 이름
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 앨범에 추가된 게시글
+CREATE TABLE gallery_items (
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    gallery_id  BIGINT NOT NULL,
+    post_id     BIGINT NOT NULL,
+    added_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (gallery_id) REFERENCES gallery(id) ON DELETE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+);
 
 
 

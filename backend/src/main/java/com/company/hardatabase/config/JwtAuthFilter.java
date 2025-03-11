@@ -29,14 +29,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
+        String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-            if (jwtTokenUtil.validateToken(token)) {
-                String username = jwtTokenUtil.getUsername(token);
 
-                // ✅ 유저가 인증되지 않았다면 인증 진행
+            // ✅ 기존의 `extractUsername()` 대신 `getUsername()` 사용
+            String username = jwtTokenUtil.getUsername(token);
+
+            if (jwtTokenUtil.validateToken(token)) {
+                // ✅ 인증이 되어있지 않다면 인증 진행
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userService.loadUserByUsername(username);
                     UsernamePasswordAuthenticationToken auth =

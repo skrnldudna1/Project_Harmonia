@@ -38,4 +38,9 @@ public class JwtTokenUtil {
                 .getBody()
                 .getSubject();
     }
+
+    public String extractUsername(String token) {
+        return getUsername(token); // getUsername()을 사용하여 해결
+    }
+
 }

@@ -1,4 +1,4 @@
-import { AppBar, Box, Container, Drawer, IconButton, Typography } from "@mui/material";
+import { AppBar, Avatar, Box, Container, Drawer, IconButton, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../component/AuthProvider";
@@ -100,7 +100,10 @@ const Header = () => {
               <img src="/images/돋보기.png" alt="검색" style={{ width: "22px", height: "30px", cursor: "pointer" }} />
             </IconButton>
             <IconButton onClick={() => navigate(user ? "/user" : "/login")} sx={{ padding: 0 }}>
-              <img src="/images/user.png" alt="유저" style={{ width: "25px", height: "23px", cursor: "pointer" }} />
+              <Avatar
+                src={user?.profileImg ? `${import.meta.env.VITE_API_URL}${user.profileImg}` : "/images/user.png"}
+                sx={{ width: "25px", height: "25px", cursor: "pointer" }}
+              />
             </IconButton>
           </Box>
         </Container>
