@@ -3,6 +3,7 @@ package com.company.hardatabase.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,11 +30,7 @@ public class WebSecurityConfig {
 
     // 사용자 프로필 변경
 
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/uploads/**") // ✅ URL 매핑
-                .addResourceLocations("file:uploads/") // ✅ 실제 파일이 저장된 위치 (프로젝트 루트)
-                .setCachePeriod(3600); // 캐싱 설정 (선택)
-    }
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -44,7 +41,9 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/signup", "/api/auth/login").permitAll()  // ✅ 회원가입 & 로그인 허용
                         .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()  // ✅ 업로드된 파일 접근 허용
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/auth/**").authenticated()  // ✅ 인증된 사용자만 닉네임 변경 가능
+                        .requestMatchers(HttpMethod.POST, "/api/auth/**").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) // ✅ JWT 필터 추가
                 .build();
@@ -60,7 +59,7 @@ public class WebSecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.setAllowedOrigins(List.of("http://localhost:3000"));  // ✅ 프론트엔드 도메인 허용
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

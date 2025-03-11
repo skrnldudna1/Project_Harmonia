@@ -4,13 +4,14 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-public class Post {
+public class Gallery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,14 +20,6 @@ public class Post {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private String title;
-    private String imageUrl;
-    private String caption;
-
-    @Column(nullable = false, updatable = false)
+    private String name;
     private LocalDateTime createdAt = LocalDateTime.now();
-
-    public Post(Long id) {
-        this.id = id;
-    }
 }

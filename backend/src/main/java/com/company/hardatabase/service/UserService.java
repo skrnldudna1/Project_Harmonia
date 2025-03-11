@@ -2,7 +2,6 @@ package com.company.hardatabase.service;
 
 import com.company.hardatabase.domain.User;
 import com.company.hardatabase.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -32,11 +31,11 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username)
                 .filter(user -> {
                     boolean matches = passwordEncoder.matches(rawPassword, user.getPassword());
-                    System.out.println("✅ 비밀번호 검증 결과: " + matches);
+                    System.out.println("비밀번호 검증 결과: " + matches);
                     return matches;
                 })
                 .map(user -> {
-                    System.out.println("✅ 로그인 성공! 유저 정보: " + user);
+                    System.out.println("로그인 성공! 유저 정보: " + user);
                     return user;
                 });
     }
@@ -66,6 +65,8 @@ public class UserService implements UserDetailsService {
         }
 
         User newUser = new User(username, encodedPassword, email, nickname);
+        // 기본 역할(권한) 추가
+        newUser.getRoles().add("ROLE_USER");
         return userRepository.save(newUser);
     }
 
@@ -81,12 +82,17 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    // 닉네임
     public User updateNickname(Long userId, String newNickname) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         if (newNickname == null || newNickname.trim().isEmpty()) {
-            newNickname = user.getUsername(); // 닉네임이 없을 경우 username 유지
+            throw new IllegalArgumentException("닉네임을 입력해야 합니다.");
+        }
+
+        if (userRepository.existsByNickname(newNickname)) {
+            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
 
         user.setNickname(newNickname);
@@ -105,6 +111,11 @@ public class UserService implements UserDetailsService {
         // 유저 프로필 이미지 업데이트
         user.setProfileImg(fileDownloadUri);
         return userRepository.save(user);
+    }
+
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElse(null);
     }
 
 }

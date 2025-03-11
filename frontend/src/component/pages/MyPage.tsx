@@ -1,26 +1,33 @@
 import { useState, useEffect } from "react";
-import { Box, Typography, Avatar, Grid, Button, IconButton, TextField, Modal } from "@mui/material";
+import { Box, Typography, Avatar, Grid, Button, IconButton, TextField, Modal, Tabs, Tab } from "@mui/material";
 import { Settings, Upload } from "@mui/icons-material";
 import axios from "axios";
 import styles from "./MyPage.module.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../component/AuthProvider"; // ✅ useAuth 추가
+import CreationsTab from "./Tab/CreationsTab";
 
 const API_URL = "http://localhost:8094/api/auth";
 const SERVER_URL = "http://localhost:8094";
 
 const MyPage = () => {
   const navigate = useNavigate();
-  const { user, setUser } = useAuth(); // ✅ useAuth에서 유저 정보 가져오기
+  const { user, setUser } = useAuth();
   const [userData, setUserData] = useState(user);
   const [newNickname, setNewNickname] = useState(user?.nickname || "");
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = useState(0); // ✅ 탭 상태 추가
   const [myFeed, setMyFeed] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]);
   const [followingPosts, setFollowingPosts] = useState([]);
   const [previewImg, setPreviewImg] = useState(user?.profileImg ? `${SERVER_URL}${user.profileImg}` : "/images/default-profile.png");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [openModal, setOpenModal] = useState(false);
+
+
+  const handleChangeTab = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+  
 
   // ✅ user 정보가 변경될 때 userData 갱신
   useEffect(() => {
@@ -75,15 +82,21 @@ const MyPage = () => {
 
       // ✅ 닉네임 변경 요청
       if (newNickname !== userData.nickname) {
-        const nicknameResponse = await axios.put(
+        const nicknameResponse = await axios.patch(
             `${API_URL}/${userData.id}/nickname`,
             { nickname: newNickname },
             {
                 headers: { Authorization: `Bearer ${token}` }, // ✅ JWT 포함
+                withCredentials: true // ✅ CORS 요청을 위해 설정
             }
         );
         updatedUser.nickname = nicknameResponse.data.nickname;
-    }
+        console.log("닉네임 변경 요청:", {
+          nickname: newNickname,
+          id: userData.id,
+          token: token, 
+        });
+      }
 
       // ✅ 프로필 사진 변경 요청
       if (selectedFile) {
@@ -111,6 +124,7 @@ const MyPage = () => {
       alert("변경을 저장하는 중 오류가 발생했습니다.");
     }
   };
+  
 
   return (
     <Box className={styles.myPageContainer}>
@@ -141,7 +155,54 @@ const MyPage = () => {
           <button className={styles.modalButton} onClick={handleSaveChanges}>변경 완료</button>
         </Box>
       </Modal>
+
+
+      {/* 탭 */}
+      <Tabs
+        value={tabValue}
+        onChange={handleChangeTab}
+        centered
+        sx={{
+          "& .MuiTabs-flexContainer": {
+            gap: "15px", // 탭 버튼 사이 간격 일정하게 유지
+            justifyContent: "center", // 모든 탭을 중앙 정렬
+          },
+          "& .MuiTabs-indicator": {
+            display: "none", // 기본 MUI 밑줄 제거
+          },
+          "& .MuiTab-root": {
+            color: "#777", // 기본 탭 색상 (회색)
+            fontSize: "16px",
+            fontWeight: 500,
+            textTransform: "none",
+            transition: "all 0.3s ease-in-out",
+            padding: "10px 20px",
+            borderRadius: "12px",
+            minWidth: "120px", // 버튼 크기 일정하게 유지
+            "&:hover": {
+              backgroundColor: "#FFF7F3", // 마우스 오버 시 색상 변경
+              color: "#000",
+            },
+          },
+          "& .Mui-selected": {
+            backgroundColor: "#FCABBF", // 선택된 탭 배경색
+            color: "#000", // 선택된 탭 글씨 검정색
+            fontWeight: 600,
+            transition: "all 0.3s ease-in-out",
+          },
+        }}
+      >
+        <Tab label="Creations" />
+        <Tab label="Gallery" />
+        <Tab label="Likes" />
+        <Tab label="Followers" />
+      </Tabs>
+      {/* 탭별 컴포넌트 불러오기 */}
+      {tabValue === 0 && <CreationsTab />}
+
     </Box>
+
+    
   );
 };
 

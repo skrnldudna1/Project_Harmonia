@@ -1,12 +1,14 @@
 package com.company.hardatabase.web;
 
 import com.company.hardatabase.domain.User;
+import com.company.hardatabase.security.CustomUserDetails;
 import com.company.hardatabase.service.UserService;
 import com.company.hardatabase.config.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
@@ -92,20 +94,30 @@ public class UserController {
     }
 
     // 닉네임 변경
-    @PutMapping("/{userId}/nickname")
-    @PreAuthorize("isAuthenticated()") // ✅ 인증된 사용자만 변경 가능
-    public ResponseEntity<User> updateNickname(
+    @PatchMapping("/{userId}/nickname")
+    @PreAuthorize("isAuthenticated()") // 인증된 사용자만 변경 가능
+    public ResponseEntity<?> updateNickname(
             @PathVariable Long userId,
             @RequestBody Map<String, String> request,
-            @AuthenticationPrincipal User user) { // ✅ 문제 발생 부분
+            @AuthenticationPrincipal UserDetails userDetails) {
 
-        if (!user.getId().equals(userId)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // ✅ 본인의 닉네임만 변경 가능
+        // userDetails가 null인지 확인 (비로그인 사용자는 차단)
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 정보가 없습니다.");
         }
 
+        // DB에서 userId를 가져와 로그인한 사용자와 비교
+        User loggedInUser = userService.findByUsername(userDetails.getUsername());
+        if (loggedInUser == null || !loggedInUser.getId().equals(userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("본인의 닉네임만 변경할 수 있습니다.");
+        }
+
+        // 닉네임 변경 로직 실행
         String newNickname = request.get("nickname");
         User updatedUser = userService.updateNickname(userId, newNickname);
         return ResponseEntity.ok(updatedUser);
     }
+
+
 
 }

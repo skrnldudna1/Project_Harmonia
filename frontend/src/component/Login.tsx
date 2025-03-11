@@ -66,13 +66,20 @@ const Login = () => {
                 <Typography variant="h5" sx={{ mb: 3, fontWeight: "bold", color: "#c599b6" }}>
                     로그인
                 </Typography>
+                <form onSubmit={(e) => {
+                        e.preventDefault(); // 기본 폼 제출 방지
+                        handleLogin(); // 로그인 함수 실행
+                    }}
+                >
+                    <TextField fullWidth label="아이디" name="username" variant="outlined" margin="normal" onChange={handleChange} />
+                    <TextField fullWidth label="비밀번호" type="password" name="password" variant="outlined" margin="normal" onChange={handleChange} />
 
-                <TextField fullWidth label="아이디" name="username" variant="outlined" margin="normal" onChange={handleChange} />
-                <TextField fullWidth label="비밀번호" type="password" name="password" variant="outlined" margin="normal" onChange={handleChange} />
-
-                <Button fullWidth variant="contained" sx={{ mt: 2, backgroundColor: "#c599b6", "&:hover": { backgroundColor: "#e6b2ba" } }} onClick={handleLogin}>
-                    로그인
-                </Button>
+                    <Button fullWidth type="submit" variant="contained" sx={{ mt: 2, backgroundColor: "#c599b6", "&:hover": { backgroundColor: "#e6b2ba" } }}
+                    //  onClick={handleLogin}
+                     >
+                        로그인
+                    </Button>
+                </form>
             </Box>
         </Container>
     );
