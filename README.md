@@ -19,8 +19,11 @@
 [#crepe ](https://crepe.cm/) ,　 [#9hope ](https://m.9hope.kr/)
 
 
+---------
 
-## 🎨Photoshop
-- slider
+## 🎯 프로젝트 개요
+- **주제**: 사용자가 일러스트를 중심으로 소통할 수 있는 커뮤니티 플랫폼 개발  
+- **목적**: 일러스트 기반의 게시글 작성, 다중 이미지 업로드, 댓글 및 좋아요 기능을 포함한 **Pinterest 스타일의 SNS** 구축  
+- **기술 스택**: `Spring Boot` + `React` + `MySQL` + `MyBatis` + `MUI`  
 
 
