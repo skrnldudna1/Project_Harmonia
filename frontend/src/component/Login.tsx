@@ -1,116 +1,88 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { TextField, Button, Box, Typography, Container } from "@mui/material";
 import axios from "axios";
+import { AuthContext } from './AuthProvider';
+
+
+const API_URL = "http://localhost:8094/api/auth";
 
 const Login = () => {
-  const [user, setUser] = useState({ username: "", password: "" });
-  const navigate = useNavigate();
+    const { setUser } = useContext(AuthContext); // ✅ 로그인 후 유저 정보 저장
+    const [credentials, setCredentials] = useState({ username: "", password: "" });
+    const navigate = useNavigate();
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUser({ ...user, [event.target.name]: event.target.value });
-  };
 
-  //백 연동
-  const handleLogin = async () => {
-    try {
-      const response = await axios.post("/api/auth/login", { 
-        username: user.username, 
-        password: user.password 
-      }, { withCredentials: true });
-  
-      alert(response.data);
-      navigate("/");
-    } catch (error) {
-      alert("로그인 실패하였습니다.");
+     // 로그인 유지 (토큰 확인)
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      console.log("✅ 자동 로그인: 토큰 존재");
+      navigate("/"); // 이미 로그인된 경우 홈으로 이동
     }
-  };
+  }, [navigate]);
 
 
-  // 로그아웃 요청
-  const handleLogout = async () => {
-    try {
-      await axios.post("/api/auth/logout", {}, { withCredentials: true });
-      alert("로그아웃 성공!");
-      navigate("/login");
-    } catch (error) {
-      console.error("로그아웃 실패");
-    }
-  };
-  
-  
+    const handleChange = (e) => {
+        setCredentials({ ...credentials, [e.target.name]: e.target.value });
+    };
 
-  return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Container maxWidth="xs">
-        <Box
-          sx={{
-            p: 4,
-            borderRadius: 3,
-            textAlign: "center",
-            backgroundColor: "white",
-            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          {/* 로고 자리 */}
-          <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold", color: "#c599b6" }}>
-            Harmonia
-          </Typography>
+    const handleLogin = async () => {
+        try {
+            const response = await axios.post(`${API_URL}/login`, credentials, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            });
 
-          {/* 입력 필드 */}
-          <TextField
-            fullWidth
-            label="아이디"
-            name="username"
-            variant="outlined"
-            margin="normal"
-            onChange={handleChange}
-          />
-          <TextField
-            fullWidth
-            label="비밀번호"
-            type="password"
-            name="password"
-            variant="outlined"
-            margin="normal"
-            onChange={handleChange}
-          />
+            console.log("✅ 로그인 응답 데이터:", response.data);
+            if (!response.data.user) throw new Error("로그인 응답에 user 데이터가 없습니다.");
 
-          {/* 로그인 버튼 */}
-          <Button
-            fullWidth
-            variant="contained"
-            sx={{
-              mt: 2,
-              backgroundColor: "#c599b6",
-              "&:hover": { backgroundColor: "#e6b2ba" },
-            }}
-            onClick={handleLogin}
-          >
-            로그인
-          </Button>
+            const { user, token } = response.data;
+            console.log("✅ 로그인 성공! 유저:", user);
+            console.log("✅ 로그인 성공! 토큰:", token);
 
-          {/* 회원가입 & 비밀번호 찾기 */}
-          <Typography variant="body2" sx={{ mt: 2, color: "#777" }}>
-            계정이 없으신가요?{" "}
-            <Button
-              sx={{ color: "#c599b6", textTransform: "none", fontWeight: "bold" }}
-              onClick={() => navigate("/join")}
+            localStorage.setItem("token", token);  // ✅ JWT 토큰 저장
+            setUser(user); // ✅ 유저 정보 상태 저장 (자동 로그인 유지)
+
+            navigate("/");
+        } catch (error) {
+            console.error("❌ 로그인 실패:", error.response ? error.response.data : error.message);
+            alert("로그인 실패! 다시 시도해주세요.");
+        }
+    };
+
+    return (
+        <Container maxWidth="xs">
+            <Box
+                sx={{
+                    mt: 8,
+                    p: 4,
+                    borderRadius: 3,
+                    textAlign: "center",
+                    backgroundColor: "white",
+                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                }}
             >
-              가입하기
-            </Button>
-          </Typography>
-        </Box>
-      </Container>
-    </Box>
-  );
+                <Typography variant="h5" sx={{ mb: 3, fontWeight: "bold", color: "#c599b6" }}>
+                    로그인
+                </Typography>
+                <form onSubmit={(e) => {
+                        e.preventDefault(); // 기본 폼 제출 방지
+                        handleLogin(); // 로그인 함수 실행
+                    }}
+                >
+                    <TextField fullWidth label="아이디" name="username" variant="outlined" margin="normal" onChange={handleChange} />
+                    <TextField fullWidth label="비밀번호" type="password" name="password" variant="outlined" margin="normal" onChange={handleChange} />
+
+                    <Button fullWidth type="submit" variant="contained" sx={{ mt: 2, backgroundColor: "#c599b6", "&:hover": { backgroundColor: "#e6b2ba" } }}
+                    //  onClick={handleLogin}
+                     >
+                        로그인
+                    </Button>
+                </form>
+            </Box>
+        </Container>
+    );
 };
 
 export default Login;

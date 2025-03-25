@@ -26,4 +26,16 @@ export const dummyPosts = [
 
       
   ];
+
+  export const fetchPostById = async (id: number): Promise<Post | null> => {
+    try {
+      const response = await fetch(`/api/posts/${id}`);
+      if (!response.ok) throw new Error("Failed to fetch post");
+      return response.json();
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+  
   

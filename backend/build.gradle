@@ -13,12 +13,6 @@ java {
 	}
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
-
 repositories {
 	mavenCentral()
 }
@@ -26,39 +20,21 @@ repositories {
 dependencies {
 	// Spring Boot 기본 설정
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-//	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4'
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	// JWT 관련
+	// JPA 활성화
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// JWT
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-	// ✅ MySQL 드라이버 (중복 제거, 최신 버전 유지)
-	runtimeOnly 'mysql:mysql-connector-java:8.0.33'
 
-	// ✅ MyBatis (MySQL 연동용)
-	implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3")
-
-
-	// Lombok (자동 코드 생성)
+	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	// 개발 도구 (Spring Boot DevTools)
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
-	// Configuration Processor
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-
-	// 테스트 관련
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	//testImplementation 'org.springframework.security:spring-security-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-	// 테스트 환경용 DB (H2)
-	testRuntimeOnly 'com.h2database:h2'
-
+	// MySQL Driver
+	implementation 'mysql:mysql-connector-java:8.0.33'
 }

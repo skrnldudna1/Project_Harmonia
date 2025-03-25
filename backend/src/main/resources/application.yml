@@ -1,60 +1,32 @@
 server:
   port: 8094
 
+
 spring:
-  data:
-    rest:
-      basePath: /api
   devtools:
     livereload:
-      enabled: true  # LiveReload 활성화
-    restart:
-      enabled: true  # 코드 수정 시 자동 재시작
-  main:
-    banner-mode: "off"
-  application:
-    name: backend
+      enabled: true
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/project_harmonia
+    driver-class-name: com.mysql.cj.jdbc.Driver
     username: project_harmonia
     password: 7070
 
-  # ✅ CORS 설정 추가 (spring.web.cors)
-  web:
-    cors:
-      allowed-origins:
-        - "http://localhost:3000"
-      allowed-methods:
-        - "*"
-      allowed-headers:
-        - "*"
-      allow-credentials: true
-
   jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
         format_sql: true
-    show-sql: true
-    hibernate:
-      ddl-auto: update  # ✅ 테이블 자동 업데이트 설정
+    database: mysql
 
 logging:
   level:
-    org:
-      mybatis: DEBUG  # MyBatis SQL 로그 확인
-      springframework.jdbc: DEBUG  # JDBC 로그 확인
-      thymeleaf: DEBUG
-      hibernate:
-        SQL: INFO
-        type:
-          descriptor:
-            sql:
-              BasicBinder: TRACE
-
-springdoc:
-  api-docs:
-    path: /api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-    enabled: true
+    root: DEBUG
+# 명확한 CORS 설정 (JWT 인증 시 필수 권장)
+cors:
+  allowed-origins: http://localhost:3000
+  allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+  allowed-headers: "*"
+  allow-credentials: true
