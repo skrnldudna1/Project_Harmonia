@@ -14,3 +14,13 @@ export default defineConfig({
   },
 
 })
+
+
+const copyRedirects = () => {
+  return {
+    name: 'copy-redirects',
+    closeBundle() {
+      copyFileSync(resolve(__dirname, 'public/_redirects'), resolve(__dirname, 'dist/_redirects'));
+    }
+  }
+}
