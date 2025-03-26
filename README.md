@@ -12,6 +12,10 @@
 
 -------------------------------------------
 
+배포 페이지
+https://web-project-harmonia-m8o87jt5f6b3957f.sel4.cloudtype.app/
+
+
 피그마
 [🔗 Figma ](https://www.figma.com/design/UVGtQDz975hQcHSyMdoUZd/harmonia?node-id=0-1&p=f&t=TjOwEylCGXqWP3zF-0)
 
