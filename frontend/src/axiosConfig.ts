@@ -13,8 +13,8 @@ axios.interceptors.request.use(config => {
 });
 
 const instance = axios.create({
-  baseURL: BASE_URL,
-  withCredentials: true,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  withCredentials: true, // 필요 시 유지
 });
 
 // 👉 토큰 붙이는 인터셉터
