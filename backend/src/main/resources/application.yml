@@ -1,14 +1,14 @@
 server:
   port: 8094
 
-
 spring:
   devtools:
     livereload:
       enabled: true
+
   datasource:
-    url: jdbc:mysql://localhost:3306/project_harmonia
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mariadb://svc.sel4.cloudtype.app:32013/project_harmonia
+    driver-class-name: org.mariadb.jdbc.Driver
     username: project_harmonia
     password: 7070
 
@@ -19,14 +19,17 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    database: mysql
+    database-platform: org.hibernate.dialect.MariaDBDialect
 
 logging:
   level:
-    root: DEBUG
-# 명확한 CORS 설정 (JWT 인증 시 필수 권장)
+    root: info
+    org.springframework.web: info
+
 cors:
-  allowed-origins: http://localhost:3000
+  allowed-origins: >
+    http://localhost:3000,
+    https://web-project-harmonia-m8o87jt5f6b3957f.sel4.cloudtype.app
   allowed-methods: GET,POST,PUT,DELETE,OPTIONS
   allowed-headers: "*"
   allow-credentials: true

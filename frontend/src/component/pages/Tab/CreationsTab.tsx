@@ -3,7 +3,8 @@ import { Box, IconButton, Input, Typography, Grid } from "@mui/material";
 import { Upload, CloudUpload } from "@mui/icons-material";
 import axios from "axios";
 
-const API_URL = "http://localhost:8094/api";
+const SERVER_URL = "https://port-0-project-harmonia-backend-m8o87jt5f6b3957f.sel4.cloudtype.app";
+const API_URL = `${SERVER_URL}/api/auth`;
 
 const CreationsTab = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);

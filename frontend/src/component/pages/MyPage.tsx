@@ -7,8 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../component/AuthProvider"; // ✅ useAuth 추가
 import CreationsTab from "./Tab/CreationsTab";
 
-const API_URL = "http://localhost:8094/api/auth";
-const SERVER_URL = "http://localhost:8094";
+const SERVER_URL = "https://port-0-project-harmonia-backend-m8o87jt5f6b3957f.sel4.cloudtype.app";
+const API_URL = `${SERVER_URL}/api/auth`;
 
 const MyPage = () => {
   const navigate = useNavigate();

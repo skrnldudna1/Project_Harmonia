@@ -23,8 +23,8 @@ const Join = () => {
   console.log("입력된 회원가입 정보:", JSON.stringify(userData));  
 
   try {
-      const response = await axios.post("http://localhost:8094/api/auth/signup", userData, {
-          headers: { "Content-Type": "application/json" },
+      const response = await axios.post("https://port-0-project-harmonia-backend-m8o87jt5f6b3957f.sel4.cloudtype.app/api/auth/signup", userData, {
+        headers: { "Content-Type": "application/json" },
       });
       alert(response.data);
       navigate("/login");

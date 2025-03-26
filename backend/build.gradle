@@ -35,6 +35,6 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	// MySQL Driver
-	implementation 'mysql:mysql-connector-java:8.0.33'
+	//Maria
+	implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.2'
 }

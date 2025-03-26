@@ -11,9 +11,9 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem("token");
     if (token) {
       axios
-        .get("http://localhost:8094/api/auth/me", {
-          headers: { Authorization: `Bearer ${token}` }, // ✅ 헤더 필수!
-        })
+  .get("https://port-0-project-harmonia-backend-m8o87jt5f6b3957f.sel4.cloudtype.app/api/auth/me", {
+    headers: { Authorization: `Bearer ${token}` },
+  })
         .then((res) => setUser(res.data))
         .catch((error) => {
           console.error("인증 실패:", error);
