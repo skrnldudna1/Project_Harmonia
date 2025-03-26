@@ -310,7 +310,7 @@
   right: 16px;
   width: 25px;
   height: 25px;
-  background: url("../images/like.png") no-repeat center center;
+  background: url("/images/like.png") no-repeat center center;
   background-size: contain;
   cursor: pointer;
   transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
@@ -318,7 +318,7 @@
 }
 
 .like-button.liked {
-  background: url("../images/like_filled.png") no-repeat center center;
+  background: url("/images/like_filled.png") no-repeat center center;
   background-size: contain;
   transform: scale(1.1);
 }
