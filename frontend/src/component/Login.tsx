@@ -5,7 +5,7 @@ import axios from "axios";
 import { AuthContext } from './AuthProvider';
 
 
-const API_URL = "http://localhost:8094/api/auth";
+const API_URL = "https://port-0-project-harmonia-backend-m8o87jt5f6b3957f.sel4.cloudtype.app/api/auth";
 
 const Login = () => {
     const { setUser } = useContext(AuthContext); // ✅ 로그인 후 유저 정보 저장

@@ -58,7 +58,11 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:3000"));  // ✅ 프론트엔드 도메인 허용
+        config.setAllowedOrigins(List.of(
+                "http://localhost:3000",
+                "https://web-project-harmonia-m8o87jt5f6b3957f.sel4.cloudtype.app"
+        ));
+        // ✅ 프론트엔드 도메인 허용
         config.setAllowedMethods(List.of("GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
 
