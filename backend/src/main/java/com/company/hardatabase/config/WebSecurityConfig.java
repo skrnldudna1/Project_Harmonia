@@ -60,6 +60,7 @@ public class WebSecurityConfig {
         config.setAllowCredentials(true);
         config.setAllowedOrigins(List.of(
                 "http://localhost:3000",
+                "http://localhost:3001",
                 "https://web-project-harmonia-m8o87jt5f6b3957f.sel4.cloudtype.app"
         ));
         // ✅ 프론트엔드 도메인 허용

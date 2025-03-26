@@ -3,7 +3,7 @@ import { Box, IconButton, Input, Typography, Grid } from "@mui/material";
 import { Upload, CloudUpload } from "@mui/icons-material";
 import axios from "axios";
 
-const SERVER_URL = "https://port-0-project-harmonia-backend-m8o87jt5f6b3957f.sel4.cloudtype.app";
+const SERVER_URL = import.meta.env.VITE_API_BASE_URL;
 const API_URL = `${SERVER_URL}/api/auth`;
 
 const CreationsTab = () => {

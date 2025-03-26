@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { TextField, Button, Box, Typography, Container } from "@mui/material";
 import axios from "axios";
 import { AuthContext } from './AuthProvider';
+import api from "../api/axios";
 
 
-const API_URL = "https://port-0-project-harmonia-backend-m8o87jt5f6b3957f.sel4.cloudtype.app/api/auth";
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/auth`;
 
 const Login = () => {
     const { setUser } = useContext(AuthContext); // ✅ 로그인 후 유저 정보 저장
@@ -29,10 +30,10 @@ const Login = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post(`${API_URL}/login`, credentials, {
-                headers: { "Content-Type": "application/json" },
-                withCredentials: true,
+            const response = await api.post("/api/auth/login", credentials, {
+              withCredentials: true,
             });
+          
 
             console.log("✅ 로그인 응답 데이터:", response.data);
             if (!response.data.user) throw new Error("로그인 응답에 user 데이터가 없습니다.");

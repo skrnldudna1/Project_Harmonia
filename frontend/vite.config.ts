@@ -10,7 +10,14 @@ export default defineConfig({
     environment: 'jsdom',
   },
   server: {
-    port: 3000,
+    port: 3001,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8094', // 로컬 백엔드 주소
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 
 })

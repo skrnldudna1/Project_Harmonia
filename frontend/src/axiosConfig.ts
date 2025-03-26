@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://port-0-project-harmonia-backend-m8o87jt5f6b3957f.sel4.cloudtype.app/api";
+const BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/api`;
 
 // 👉 axios 전역 설정 (선택)
 axios.defaults.baseURL = BASE_URL;
