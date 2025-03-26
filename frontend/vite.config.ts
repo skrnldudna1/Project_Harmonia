@@ -30,4 +30,5 @@ const copyRedirects = () => {
       copyFileSync(resolve(__dirname, 'public/_redirects'), resolve(__dirname, 'dist/_redirects'));
     }
   }
+  
 }

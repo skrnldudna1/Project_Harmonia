@@ -75,56 +75,50 @@ const MyPage = () => {
           alert("사용자 정보를 찾을 수 없습니다.");
           return;
       }
-
+  
       const token = localStorage.getItem("token"); // ✅ 토큰 가져오기
       if (!token) {
           alert("로그인이 필요합니다.");
           navigate("/login");
           return;
       }
-
       let updatedUser = { ...userData };
 
       // ✅ 닉네임 변경 요청
       if (newNickname !== userData.nickname) {
         const nicknameResponse = await api.patch(
-          `/users/${userData.id}/nickname`,
+          `/api/users/${userData.id}/nickname`, // 수정된 경로
           { nickname: newNickname },
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
         updatedUser.nickname = nicknameResponse.data.nickname;
-        console.log("닉네임 변경 요청:", {
-          nickname: newNickname,
-          id: userData.id,
-          token: token, 
-        });
       }
 
       // ✅ 프로필 사진 변경 요청
       if (selectedFile) {
         const formData = new FormData();
         formData.append("file", selectedFile);
-
+  
         const profileResponse = await api.post(
-          `/users/${userData.id}/profile-img`, 
+          `/api/users/${userData.id}/profile-img`, // 수정된 경로
           formData,
           {
-            headers: { 
+            headers: {
               "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${token}`,
-            }
+            },
           }
         );
-
         updatedUser.profileImg = profileResponse.data.profileImg;
       }
+
 
       setUser(updatedUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
       setPreviewImg(updatedUser.profileImg ? `${SERVER_URL}${updatedUser.profileImg}` : "/images/default-profile.png");
-
+  
       alert("변경 사항이 저장되었습니다.");
       setOpenModal(false);
     } catch (error) {
@@ -138,10 +132,10 @@ const MyPage = () => {
     <Box className={styles.myPageContainer}>
       <Box className={styles.profileSection}>
         <Box className={styles.profileContainer}>
-          <Avatar
-            src={userData?.profileImg ? `${SERVER_URL}${userData.profileImg}` : "/images/default-profile.png"}
-            className={styles.profileAvatar}
-          />
+        <Avatar
+          src={userData?.profileImg ? `${import.meta.env.VITE_API_BASE_URL}${userData.profileImg}` : "/images/default-profile.png"}
+          className={styles.profileAvatar}
+        />
           <Typography variant="h5">{userData?.nickname || userData?.username}</Typography>
           <Typography variant="body1" color="gray">팔로잉 1 | 팔로워 5.4K</Typography>
           <IconButton className={styles.settingsButton} onClick={() => setOpenModal(true)}>
