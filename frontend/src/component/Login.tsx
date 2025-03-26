@@ -30,9 +30,8 @@ const Login = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await api.post("/api/auth/login", credentials);
+            const response = await api.post("/login", credentials);
           
-
             console.log("✅ 로그인 응답 데이터:", response.data);
             if (!response.data.user) throw new Error("로그인 응답에 user 데이터가 없습니다.");
 
