@@ -17,6 +17,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "https://web-project-harmonia-m8o87jt5f6b3957f.sel4.cloudtype.app")
 public class UserController {
 
     @Autowired
