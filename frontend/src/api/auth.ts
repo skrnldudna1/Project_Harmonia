@@ -1,11 +1,18 @@
-import axios from "axios";
-
-const API_URL = "https://port-0-project-harmonia-backend-m8o87jt5f6b3957f.sel4.cloudtype.app/api/auth";
+// src/api/auth.ts
+import api from "./axios";
 
 export const registerUser = async (userData: any) => {
-  return axios.post(`${API_URL}/signup`, userData);
+  return api.post("/api/auth/signup", userData);
 };
 
 export const loginUser = async (userData: any) => {
-  return axios.post(`${API_URL}/login`, userData);
+  return api.post("/api/auth/login", userData);
+};
+
+export const getUserProfile = (token: string) => {
+  return api.get("/api/auth/me", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };

@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
 export const AuthContext = createContext(null);
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/auth`;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -10,9 +11,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      axios
-  .get("https://port-0-project-harmonia-backend-m8o87jt5f6b3957f.sel4.cloudtype.app/api/auth/me", {
-    headers: { Authorization: `Bearer ${token}` },
+      axios.get(`${API_URL}/me`, {
+        headers: { Authorization: `Bearer ${token}` },
   })
         .then((res) => setUser(res.data))
         .catch((error) => {

@@ -6,9 +6,12 @@ import styles from "./MyPage.module.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../component/AuthProvider"; // ✅ useAuth 추가
 import CreationsTab from "./Tab/CreationsTab";
+import api from "../../api/axios";
+import { getUserProfile } from "../../api/auth";
 
-const SERVER_URL = "https://port-0-project-harmonia-backend-m8o87jt5f6b3957f.sel4.cloudtype.app";
+const SERVER_URL = import.meta.env.VITE_API_BASE_URL;
 const API_URL = `${SERVER_URL}/api/auth`;
+
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -42,13 +45,15 @@ const MyPage = () => {
       navigate("/login");
       return;
     }
-
-    axios.get(`${API_URL}/me`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }, // ✅ 토큰 추가
-    })
-      .then(res => setUserData(res.data))
+  
+    const token = localStorage.getItem("token");
+    if (!token) return;
+  
+    getUserProfile(token)
+      .then((res) => setUserData(res.data))
       .catch(() => navigate("/login"));
   }, [user, navigate]);
+  
 
   // ✅ 프로필 사진 변경 미리보기
   const handleProfileImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,13 +87,12 @@ const MyPage = () => {
 
       // ✅ 닉네임 변경 요청
       if (newNickname !== userData.nickname) {
-        const nicknameResponse = await axios.patch(
-            `${API_URL}/${userData.id}/nickname`,
-            { nickname: newNickname },
-            {
-                headers: { Authorization: `Bearer ${token}` }, // ✅ JWT 포함
-                withCredentials: true // ✅ CORS 요청을 위해 설정
-            }
+        const nicknameResponse = await api.patch(
+          `/users/${userData.id}/nickname`,
+          { nickname: newNickname },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
         updatedUser.nickname = nicknameResponse.data.nickname;
         console.log("닉네임 변경 요청:", {
@@ -103,12 +107,16 @@ const MyPage = () => {
         const formData = new FormData();
         formData.append("file", selectedFile);
 
-        const profileResponse = await axios.post(`${API_URL}/${userData.id}/profile-img`, formData, {
-          headers: { 
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // ✅ 토큰 추가
-          },
-        });
+        const profileResponse = await api.post(
+          `/users/${userData.id}/profile-img`, 
+          formData,
+          {
+            headers: { 
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            }
+          }
+        );
 
         updatedUser.profileImg = profileResponse.data.profileImg;
       }
