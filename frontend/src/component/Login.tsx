@@ -30,9 +30,7 @@ const Login = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await api.post("/api/auth/login", credentials, {
-              withCredentials: true,
-            });
+            const response = await api.post("/api/auth/login", credentials);
           
 
             console.log("✅ 로그인 응답 데이터:", response.data);
