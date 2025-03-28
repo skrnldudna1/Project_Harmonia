@@ -12,22 +12,36 @@
 
 -------------------------------------------
 
-배포 페이지
-https://web-project-harmonia-m8o87jt5f6b3957f.sel4.cloudtype.app/
 
+## 🎯 Harmonia 프로젝트
 
-피그마
-[🔗 Figma ](https://www.figma.com/design/UVGtQDz975hQcHSyMdoUZd/harmonia?node-id=0-1&p=f&t=TjOwEylCGXqWP3zF-0)
+일러스트를 중심으로 소통하는 Pinterest 스타일의 SNS 커뮤니티 플랫폼
+
+---
+
+### 🔭 [🔗 배포 페이지 바로가기](https://web-project-harmonia-m8o87jt5f6b3957f.sel4.cloudtype.app/)
+
+---
+
+### 🎨 [🔗 Figma 디자인 확인하기](https://www.figma.com/design/UVGtQDz975hQcHSyMdoUZd/harmonia?node-id=0-1&p=f&t=TjOwEylCGXqWP3zF-0)
+
+---
 
 ### 🧷 참고 사이트
-[#crepe ](https://crepe.cm/) ,　 [#9hope ](https://m.9hope.kr/)
 
+- [#crepe](https://crepe.cm/)
+- [#9hope](https://m.9hope.kr/)
 
----------
+---
 
-## 🎯 프로젝트 개요
-- **주제**: 사용자가 일러스트를 중심으로 소통할 수 있는 커뮤니티 플랫폼 개발  
-- **목적**: 일러스트 기반의 게시글 작성, 다중 이미지 업로드, 댓글 및 좋아요 기능을 포함한 **Pinterest 스타일의 SNS** 구축  
-- **기술 스택**: `Spring Boot` + `React` + `MySQL` + `MyBatis` + `MUI`  
+### 📌 프로젝트 개요
+
+| 항목      | 내용                                                      |
+|-----------|-----------------------------------------------------------|
+| **주제**  | 사용자가 일러스트를 중심으로 소통할 수 있는 커뮤니티 플랫폼 개발 |
+| **목적**  | 일러스트 기반의 게시글 작성, 다중 이미지 업로드, 댓글 및 좋아요 기능을 포함한 **Pinterest 스타일의 SNS** 구축 |
+| **기술 스택** | `Spring Boot`, `React`, `MySQL`, `MyBatis`, `MUI`           |
+
+---
 
 
