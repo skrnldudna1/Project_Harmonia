@@ -100,10 +100,14 @@ const Header = () => {
               <img src="/images/돋보기.png" alt="검색" style={{ width: "22px", height: "30px", cursor: "pointer" }} />
             </IconButton>
             <IconButton onClick={() => navigate(user ? "/user" : "/login")} sx={{ padding: 0 }}>
-              <Avatar
-                src={user?.profileImg ? `${import.meta.env.VITE_API_URL}${user.profileImg}` : "/images/user.png"}
-                sx={{ width: "25px", height: "25px", cursor: "pointer" }}
-              />
+            <Avatar
+              src={
+                user?.profileImg
+                  ? `${user.profileImg}?v=${Date.now()}` // ✅ 캐시 무효화까지 포함!
+                  : "/images/user.png"
+              }
+              sx={{ width: "25px", height: "25px", cursor: "pointer" }}
+            />
             </IconButton>
           </Box>
         </Container>
