@@ -37,4 +37,7 @@ dependencies {
 
 	//Maria
 	implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.2'
+
+	//Cloudinary
+	implementation 'com.cloudinary:cloudinary-http44:1.29.0'
 }

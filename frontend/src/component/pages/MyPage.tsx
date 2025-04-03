@@ -131,6 +131,7 @@ const MyPage = () => {
       localStorage.setItem("user", JSON.stringify(updatedUser));
       setPreviewImg(updatedUser.profileImg ? `${SERVER_URL}${updatedUser.profileImg}` : "/images/default-profile.png");
   
+      setPreviewImg(updatedUser.profileImg);
       alert("변경 사항이 저장되었습니다.");
       setOpenModal(false);
     } catch (error) {
@@ -145,7 +146,7 @@ const MyPage = () => {
       <Box className={styles.profileSection}>
         <Box className={styles.profileContainer}>
         <Avatar
-          src={userData?.profileImg ? `${import.meta.env.VITE_API_BASE_URL}${userData.profileImg}` : "/images/default-profile.png"}
+          src={userData?.profileImg ? `${userData.profileImg}?v=${Date.now()}` : "/images/default-profile.png"}
           className={styles.profileAvatar}
         />
           <Typography variant="h5">{userData?.nickname || userData?.username}</Typography>
@@ -159,7 +160,15 @@ const MyPage = () => {
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
         <Box className={styles.modalContainer}>
           <Typography className={styles.modalTitle}>프로필 수정</Typography>
-          <Avatar src={previewImg} className={styles.previewAvatar} sx={{ width: 220, height: 220, margin: "0 auto", mb: 2 }} />
+          <Avatar
+            src={
+              previewImg?.startsWith("data:") || previewImg?.startsWith("blob:")
+                ? previewImg
+                : `${previewImg}?v=${Date.now()}`
+            }
+            className={styles.previewAvatar}
+            sx={{ width: 220, height: 220, margin: "0 auto", mb: 2 }}
+          />
           <input type="file" accept="image/*" onChange={handleProfileImageUpload} hidden id="profile-upload" />
           <label htmlFor="profile-upload" className={styles.uploadButton}>
             <Upload sx={{ mr: 1 }} />

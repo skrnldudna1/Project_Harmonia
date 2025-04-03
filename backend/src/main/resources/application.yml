@@ -33,3 +33,9 @@ cors:
   allowed-methods: GET,POST,PUT,DELETE,OPTIONS
   allowed-headers: "*"
   allow-credentials: true
+
+# Cloudinary 연동 설정
+cloudinary:
+  cloud_name: dh2uttfkd
+  api_key: 452419746681872
+  api_secret: 0khBtGBTEtwi66URRBEPxNNXGow
