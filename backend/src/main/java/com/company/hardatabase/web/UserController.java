@@ -113,8 +113,13 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("본인의 닉네임만 변경할 수 있습니다.");
         }
 
-        // 닉네임 변경 로직 실행
+        // 닉네임 중복 검사 추가
         String newNickname = request.get("nickname");
+        if (userService.isNicknameDuplicate(newNickname)
+                && !loggedInUser.getNickname().equals(newNickname)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용 중인 닉네임입니다.");
+        }
+        // 닉네임 변경 로직 실행
         User updatedUser = userService.updateNickname(userId, newNickname);
         return ResponseEntity.ok(updatedUser);
     }
