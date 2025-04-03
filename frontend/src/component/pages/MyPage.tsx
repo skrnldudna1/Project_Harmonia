@@ -87,7 +87,7 @@ const MyPage = () => {
       // ✅ 닉네임 변경 요청
       if (newNickname !== userData.nickname) {
         const nicknameResponse = await api.patch(
-          `/api/users/${userData.id}/nickname`, // 수정된 경로
+          `/api/auth/${userData.id}/nickname`,
           { nickname: newNickname },
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -102,7 +102,7 @@ const MyPage = () => {
         formData.append("file", selectedFile);
   
         const profileResponse = await api.post(
-          `/api/users/${userData.id}/profile-img`, // 수정된 경로
+          `/api/auth/${userData.id}/profile-img`,
           formData,
           {
             headers: {
