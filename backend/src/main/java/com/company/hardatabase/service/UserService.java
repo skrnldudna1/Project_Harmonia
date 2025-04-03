@@ -1,5 +1,6 @@
 package com.company.hardatabase.service;
 
+import com.company.hardatabase.config.CloudinaryUploader;
 import com.company.hardatabase.domain.User;
 import com.company.hardatabase.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,12 +21,18 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final FileStorageService fileStorageService;
+    private final CloudinaryUploader cloudinaryUploader;
+
 
     // 생성자 주입 방식으로 변경
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileStorageService fileStorageService) {
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       FileStorageService fileStorageService,
+                       CloudinaryUploader cloudinaryUploader) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.fileStorageService = fileStorageService;
+        this.cloudinaryUploader = cloudinaryUploader;
     }
 
     public Optional<User> login(String username, String rawPassword) {
@@ -104,13 +112,18 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        // 파일 저장 및 URL 반환
-        String fileName = fileStorageService.storeFile(file);
-        String fileDownloadUri = "/uploads/" + fileName;
+        try {
+            // ✅ Cloudinary에 이미지 업로드하고 URL 받아오기
+            String imageUrl = cloudinaryUploader.upload(file, "profile");
 
-        // 유저 프로필 이미지 업데이트
-        user.setProfileImg(fileDownloadUri);
-        return userRepository.save(user);
+            // ✅ 유저 프로필 이미지 필드에 Cloudinary URL 저장
+            user.setProfileImg(imageUrl);
+
+            return userRepository.save(user);
+
+        } catch (IOException e) {
+            throw new RuntimeException("프로필 이미지 업로드 실패", e);
+        }
     }
 
     public User findByUsername(String username) {
