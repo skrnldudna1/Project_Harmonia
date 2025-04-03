@@ -118,4 +118,9 @@ public class UserService implements UserDetailsService {
                 .orElse(null);
     }
 
+    // 닉네임 유효성
+    public boolean isNicknameDuplicate(String nickname) {
+        return userRepository.existsByNickname(nickname);
+    }
+
 }

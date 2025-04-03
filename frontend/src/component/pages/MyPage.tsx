@@ -86,14 +86,26 @@ const MyPage = () => {
 
       // ✅ 닉네임 변경 요청
       if (newNickname !== userData.nickname) {
-        const nicknameResponse = await api.patch(
-          `/api/auth/${userData.id}/nickname`,
-          { nickname: newNickname },
-          {
-            headers: { Authorization: `Bearer ${token}` },
+        try {
+          const nicknameResponse = await api.patch(
+            `/api/auth/${userData.id}/nickname`,
+            { nickname: newNickname },
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          updatedUser.nickname = nicknameResponse.data.nickname;
+  
+        } catch (error) {
+          if (error.response?.status === 409) {
+            // ✅ 중복 닉네임 처리
+            alert("이미 사용 중인 닉네임 입니다.");
+            return;
+          } else {
+            alert("닉네임 변경 중 오류가 발생하였습니다.");
+            return;
           }
-        );
-        updatedUser.nickname = nicknameResponse.data.nickname;
+        }
       }
 
       // ✅ 프로필 사진 변경 요청
