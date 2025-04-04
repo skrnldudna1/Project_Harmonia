@@ -1,6 +1,7 @@
 package com.company.hardatabase.service;
 
 import com.company.hardatabase.domain.Post;
+import com.company.hardatabase.repository.PostProjection;
 import com.company.hardatabase.repository.PostRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -14,8 +15,9 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public List<Post> getAllPosts() {
-        return postRepository.findAllByOrderByCreatedAtDesc();
+    // ✨ nickname 포함한 projection으로 가져오기
+    public List<PostProjection> getAllPosts() {
+        return postRepository.findAllWithNickname();
     }
 
     public Post createPost(Post post) {
@@ -26,9 +28,8 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
-    //게시글
-    public Optional<Post> getPostById(Long id) {
-        return postRepository.findById(id);
+    public Optional<PostProjection> getPostById(Long id) {
+        return postRepository.findPostProjectionById(id);
     }
 
 }
