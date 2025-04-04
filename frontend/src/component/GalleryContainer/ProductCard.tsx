@@ -21,7 +21,7 @@ const ProductCard = ({ post, isLiked, toggleLike }) => {
         {/* 📷 상품 이미지 */}
         <CardMedia
           component="img"
-          image={post.image}
+          image={post.imageUrl}
           alt={post.title}
           sx={{
             width: "100%", // 고정 너비
@@ -35,8 +35,7 @@ const ProductCard = ({ post, isLiked, toggleLike }) => {
       <div className="product-overlay">
         <div className="product-info">
           <h4 className="product-title">{post.title}</h4>
-          <p className="product-id">{post.name} (님)</p>
-          <h4 className="product-price">꽃</h4>
+          <p className="product-id">{post.nickname} (님)</p>
         </div>
         <div 
           className={`like-button ${isLiked ? "liked" : ""}`} 

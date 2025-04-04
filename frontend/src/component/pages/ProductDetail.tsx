@@ -3,32 +3,16 @@ import { useEffect, useState } from "react";
 import { Box, Typography, Paper, Avatar, IconButton, TextField, Dialog } from "@mui/material";
 import ShareIcon from "@mui/icons-material/Share";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import axios from "axios";
 
-const sampleProducts = {
-  1: {
-    title: "아름다운 장미",
-    image: "/images/A/A1.jpg",
-    description: "이 장미는 고급스럽고 우아한 느낌을 줍니다.",
-    user: { name: "우수희", profileImage: "/images/user1.jpg", bio: "오렌지색을 사랑하는 공주입니다." },
-  },
-  2: {
-    title: "웃음",
-    image: "/images/A/A3.jpg",
-    description: "하하하하ㅏ하하하하",
-    user: { name: "곰수희", profileImage: "/images/A/A3.jpg", bio: "웃지라도 않으면 진짜 살 수 없잖아 ㅠ" },
-  },
-  3: {
-    title: "딸기맛",
-    image: "/images/A/A25.jpg",
-    description: "바닷가에서 찍은 멋진 풍경 사진입니다.",
-    user: { name: "후라", profileImage: "/images/A/A25.jpg", bio: "파도를 보면 마음이 편안해지는 사람 🌊" },
-  },
-};
 
 const ProductDetail = () => {
   const { id } = useParams();
+  console.log("🔥 가져온 id:", id);
   const navigate = useNavigate();
-  const product = sampleProducts[id] || null;
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
 
   // 좋아요 상태 & 애니메이션 상태 추가
   const [liked, setLiked] = useState(false);
@@ -49,13 +33,31 @@ const ProductDetail = () => {
     setTimeout(() => setAnimate(false), 300);
   };
 
-  if (!product) {
-    return (
-      <Box sx={{ padding: "20px", textAlign: "center" }}>
-        <Typography variant="h5">이미지를 찾을 수 없습니다.</Typography>
-      </Box>
-    );
+  if (loading) {
+    return <Box sx={{ padding: "40px", textAlign: "center" }}><Typography>로딩 중...</Typography></Box>;
   }
+  
+  if (!product) {
+    return <Box sx={{ padding: "40px", textAlign: "center" }}><Typography>게시글이 없습니다.</Typography></Box>;
+  }
+
+
+// 데이터 불러오자마자 확인해보자
+      useEffect(() => {
+        const fetchProduct = async () => {
+          try {
+            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/posts/${id}`);
+            console.log("📦 받아온 product 데이터", res.data); 
+            setProduct(res.data);
+          } catch (err) {
+            console.error("❌ 게시글 불러오기 실패:", err); 
+          } finally {
+            setLoading(false);
+          }
+        };
+
+        fetchProduct();
+      }, [id]);
 
   return (
     <Box sx={{ padding: "40px", maxWidth: "1200px", margin: "auto", display: "flex", gap: "20px" }}>
@@ -76,7 +78,7 @@ const ProductDetail = () => {
         <Paper elevation={3} sx={{ overflow: "hidden", borderRadius: "8px" }}>
           {/* ✅ 클릭 시 모달 오픈 */}
           <img
-            src={product.image}
+            src={product.imageUrl}
             alt={product.title}
             style={{ width: "100%", height: "auto", objectFit: "cover", cursor: "pointer" }}
             onClick={() => setOpenModal(true)}
@@ -116,15 +118,20 @@ const ProductDetail = () => {
           {product.title}
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 2 }}>
-          <Avatar src={product.user.profileImage} alt={product.user.name} sx={{ width: 40, height: 40 }} />
+          <Avatar src="/images/user.png" alt={product.nickname} sx={{ width: 40, height: 40 }} />
           <Box>
-            <Typography variant="h6">{product.user.name}</Typography>
-            <Typography variant="body2" color="gray">{product.user.bio}</Typography>
+            <Typography variant="h6">{product.nickname} 님</Typography>
+            {/* 필요하다면 작성 날짜도 여기에 표시할 수 있어 */}
+            <Typography variant="body2" color="gray">
+              {new Date(product.createdAt).toLocaleDateString("ko-KR")}
+            </Typography>
           </Box>
         </Box>
 
         {/* 설명 */}
-        <Typography variant="body1" sx={{ mt: 3 }}>{product.description}</Typography>
+        <Typography variant="body1" sx={{ mt: 3 }}>
+          {product.caption}
+        </Typography>
 
         {/* 댓글 입력창 */}
         <Box sx={{ mt: 4 }}>
@@ -136,7 +143,7 @@ const ProductDetail = () => {
       {/* ✅ 이미지 클릭 시 원본 보기 모달 */}
       <Dialog open={openModal} onClose={() => setOpenModal(false)} maxWidth="lg">
         <Box sx={{ p: 2, display: "flex", justifyContent: "center", alignItems: "center" }}>
-          <img src={product.image} alt={product.title} style={{ width: "100%", height: "auto", maxWidth: "900px" }} />
+          <img src={product.imageUrl} alt={product.title} style={{ width: "100%", height: "auto", maxWidth: "900px" }} />
         </Box>
       </Dialog>
     </Box>

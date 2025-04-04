@@ -1,12 +1,11 @@
 package com.company.hardatabase.service;
 
-
 import com.company.hardatabase.domain.Like;
-import com.company.hardatabase.domain.Post;
 import com.company.hardatabase.domain.User;
 import com.company.hardatabase.repository.LikeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.company.hardatabase.domain.Post;
 
 import java.util.List;
 import java.util.Optional;
