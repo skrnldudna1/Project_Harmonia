@@ -8,5 +8,6 @@ public interface PostProjection {
     String getImageUrl();
     String getCaption();
     LocalDateTime getCreatedAt();
-    String getNickname(); // JOIN으로 받아올 nickname
+    String getNickname();
+    String getProfileImg();
 }

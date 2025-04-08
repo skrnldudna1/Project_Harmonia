@@ -18,11 +18,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         p.imageUrl AS imageUrl,
         p.caption AS caption,
         p.createdAt AS createdAt,
-        u.nickname AS nickname
+        u.nickname AS nickname,
+        u.profileImg AS profileImg
     FROM Post p
-    JOIN User u ON p.userId = u.id
+    JOIN User u ON p.userId = u.id 
     ORDER BY p.createdAt DESC
-""")
+    """)
     List<PostProjection> findAllWithNickname();
 
     @Query("""
@@ -32,10 +33,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         p.imageUrl AS imageUrl,
         p.caption AS caption,
         p.createdAt AS createdAt,
-        u.nickname AS nickname
+        u.nickname AS nickname,
+        u.profileImg AS profileImg
     FROM Post p
-    JOIN User u ON p.userId = u.id
+    JOIN User u ON p.userId = u.id 
     WHERE p.id = :id
-""")
+    """)
     Optional<PostProjection> findPostProjectionById(@Param("id") Long id);
 }

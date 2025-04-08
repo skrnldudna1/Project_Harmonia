@@ -37,7 +37,7 @@ public class PostController {
 
     // 게시글
     @GetMapping("/{id}")
-    public ResponseEntity<PostProjection> getPostById(@PathVariable Long id) {
+    public ResponseEntity<PostProjection> getPostById(@PathVariable("id") Long id) {
         return postService.getPostById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
