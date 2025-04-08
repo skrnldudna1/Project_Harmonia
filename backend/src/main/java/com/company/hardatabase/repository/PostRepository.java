@@ -11,6 +11,7 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
+    // 전체 게시글 조회
     @Query("""
     SELECT 
         p.id AS id,
@@ -40,4 +41,25 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     WHERE p.id = :id
     """)
     Optional<PostProjection> findPostProjectionById(@Param("id") Long id);
+
+
+    // 특정 유저 /마이페이지
+    @Query("""
+    SELECT 
+        p.id AS id,
+        p.title AS title,
+        p.imageUrl AS imageUrl,
+        p.caption AS caption,
+        p.createdAt AS createdAt,
+        u.nickname AS nickname,
+        u.profileImg AS profileImg
+    FROM Post p
+    JOIN User u ON p.userId = u.id
+    WHERE u.id = :userId
+    ORDER BY p.createdAt DESC
+""")
+    List<PostProjection> findAllByUserId(@Param("userId") Long userId);
+
 }
+
+

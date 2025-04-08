@@ -28,8 +28,15 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
+    // 메인페이지용
     public Optional<PostProjection> getPostById(Long id) {
         return postRepository.findPostProjectionById(id);
+    }
+
+
+    // 마이페이지용
+    public List<PostProjection> findPostsByUserId(Long userId) {
+        return postRepository.findAllByUserId(userId);
     }
 
 }

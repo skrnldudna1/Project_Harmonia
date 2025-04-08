@@ -9,6 +9,7 @@ import MainLayout from "./layouts/MainLayout";
 import { AuthProvider, useAuth } from "./component/AuthProvider";
 import CreationsTab from "./component/pages/Tab/CreationsTab";
 import ProductDetail from "./component/pages/ProductDetail";
+import PostCreate from "./component/pages/post/PostCreate";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ function MainRouter() {
           <Route path="/user" element={user ? <MyPage user={user} /> : <Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
+          <Route path="/post/create" element={<PostCreate />} />
         </Route>
       </Routes>
     </>
