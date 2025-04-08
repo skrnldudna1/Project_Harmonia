@@ -1,78 +1,75 @@
-import { useState } from "react";
-import { Box, IconButton, Input, Typography, Grid } from "@mui/material";
-import { Upload, CloudUpload } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import { Box, Typography, Grid, IconButton } from "@mui/material";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../../AuthProvider";
 
 const SERVER_URL = import.meta.env.VITE_API_BASE_URL;
-const API_URL = `${SERVER_URL}/api/auth`;
+
+interface Post {
+  id: number;
+  title: string;
+  caption: string;
+  imageUrl: string;
+  createdAt: string;
+  nickname: string;
+  profileImg?: string;
+}
 
 const CreationsTab = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewImg, setPreviewImg] = useState<string | null>(null);
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const { user } = useAuth(); // 로그인한 유저 정보
+  const [posts, setPosts] = useState<Post[]>([]);
+  const navigate = useNavigate();
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImg(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  useEffect(() => {
+    if (!user) return;
 
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      alert("이미지를 선택해주세요.");
-      return;
-    }
+    const fetchMyPosts = async () => {
+      try {
+        const res = await axios.get(`${SERVER_URL}/api/posts/my`, {
+          withCredentials: true, // 세션 기반 로그인일 경우 필요
+        });
+        setPosts(res.data);
+      } catch (err) {
+        console.error("내 게시글 불러오기 실패 💥", err);
+      }
+    };
 
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-
-    try {
-      const response = await axios.post(`${API_URL}/uploads`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      setUploadedImages((prev) => [...prev, response.data.imageUrl]);
-      setSelectedFile(null);
-      setPreviewImg(null);
-      alert("이미지가 성공적으로 업로드되었습니다!");
-    } catch (error) {
-      console.error("이미지 업로드 실패:", error);
-      alert("이미지 업로드 중 오류가 발생했습니다.");
-    }
-  };
+    fetchMyPosts();
+  }, [user]);
 
   return (
     <Box>
-      <Typography variant="h6" sx={{ mb: 2 }}></Typography>
-      <Box display="flex" justifyContent="flex-end" alignItems="center" mb={2} width="100%">
-        <Input type="file" onChange={handleFileChange} sx={{ display: "none" }} id="upload-file" />
-        <label htmlFor="upload-file">
-          <IconButton component="span" size="small" sx={{ mr: 1 }}>
-            <Upload fontSize="small" />
-          </IconButton>
-        </label>
-        <IconButton size="small" color="primary" onClick={handleUpload} disabled={!selectedFile}>
-          <CloudUpload fontSize="small" />
+      <Box display="flex" justifyContent="flex-end" mb={2}>
+        <IconButton onClick={() => navigate("/post/create")}>
+          <AddPhotoAlternateIcon />
         </IconButton>
       </Box>
-      {previewImg && (
-        <Box textAlign="center" mb={2}>
-          <img src={previewImg} alt="미리보기" style={{ width: "200px", borderRadius: "8px" }} />
-        </Box>
+
+      {posts.length === 0 ? (
+        <Typography align="center" sx={{ mt: 3 }}>
+          아직 작성한 게시글이 없어요 😢
+        </Typography>
+      ) : (
+        <Grid container spacing={2}>
+          {posts.map((post) => (
+            <Grid item xs={4} key={post.id}>
+              <img
+                src={post.imageUrl}
+                alt={post.title}
+                style={{ width: "100%", borderRadius: "8px" }}
+              />
+              <Typography variant="subtitle1" sx={{ mt: 1 }}>
+                {post.title}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {post.caption}
+              </Typography>
+            </Grid>
+          ))}
+        </Grid>
       )}
-      <Grid container spacing={2}>
-        {uploadedImages.map((image, index) => (
-          <Grid item xs={4} key={index}>
-            <img src={image} alt={`업로드된 이미지 ${index}`} style={{ width: "100%", borderRadius: "8px" }} />
-          </Grid>
-        ))}
-      </Grid>
     </Box>
   );
 };

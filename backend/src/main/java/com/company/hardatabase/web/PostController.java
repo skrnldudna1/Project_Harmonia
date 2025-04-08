@@ -2,8 +2,10 @@ package com.company.hardatabase.web;
 
 import com.company.hardatabase.domain.Post;
 import com.company.hardatabase.repository.PostProjection;
+import com.company.hardatabase.security.CustomUserDetails;
 import com.company.hardatabase.service.PostService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,6 +43,12 @@ public class PostController {
         return postService.getPostById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<List<PostProjection>> getMyPosts(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        System.out.println("🔥 로그인한 유저 ID: " + userDetails);  // 여기 추가!!
+        return ResponseEntity.ok(postService.findPostsByUserId(userDetails.getId()));
     }
 
 }
