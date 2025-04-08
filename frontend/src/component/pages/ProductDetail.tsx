@@ -20,6 +20,29 @@ const ProductDetail = () => {
   const [fadeIn, setFadeIn] = useState(false);
   const [openModal, setOpenModal] = useState(false); // ✅ 이미지 모달 상태 추가
 
+
+  useEffect(() => {
+    console.log("🧩 useEffect 진입");
+
+    const fetchProduct = async () => {
+      try {
+        const url = `${import.meta.env.VITE_API_BASE_URL}/api/posts/${id}`;
+        console.log("👉 요청 URL:", url);
+
+        const res = await axios.get(url);
+        console.log("📦 받아온 product 데이터", res.data);
+        setProduct(res.data);
+      } catch (err) {
+        console.error("❌ 게시글 불러오기 실패:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  
   // 컴포넌트 마운트 시 최상단으로 이동 + 이미지 페이드 인 효과
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -33,6 +56,8 @@ const ProductDetail = () => {
     setTimeout(() => setAnimate(false), 300);
   };
 
+  
+
   if (loading) {
     return <Box sx={{ padding: "40px", textAlign: "center" }}><Typography>로딩 중...</Typography></Box>;
   }
@@ -43,21 +68,7 @@ const ProductDetail = () => {
 
 
 // 데이터 불러오자마자 확인해보자
-      useEffect(() => {
-        const fetchProduct = async () => {
-          try {
-            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/posts/${id}`);
-            console.log("📦 받아온 product 데이터", res.data); 
-            setProduct(res.data);
-          } catch (err) {
-            console.error("❌ 게시글 불러오기 실패:", err); 
-          } finally {
-            setLoading(false);
-          }
-        };
 
-        fetchProduct();
-      }, [id]);
 
   return (
     <Box sx={{ padding: "40px", maxWidth: "1200px", margin: "auto", display: "flex", gap: "20px" }}>
@@ -118,7 +129,15 @@ const ProductDetail = () => {
           {product.title}
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 2 }}>
-          <Avatar src="/images/user.png" alt={product.nickname} sx={{ width: 40, height: 40 }} />
+        <Avatar
+          src={
+            product?.profileImg
+              ? `${product.profileImg}?v=${Date.now()}`
+              : "/images/user.png"
+          }
+          alt={product?.nickname}
+          sx={{ width: 40, height: 40 }}
+        />
           <Box>
             <Typography variant="h6">{product.nickname} 님</Typography>
             {/* 필요하다면 작성 날짜도 여기에 표시할 수 있어 */}
