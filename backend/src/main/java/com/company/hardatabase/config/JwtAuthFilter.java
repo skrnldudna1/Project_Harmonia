@@ -1,5 +1,7 @@
 package com.company.hardatabase.config;
 
+import com.company.hardatabase.security.CustomUserDetails;
+import com.company.hardatabase.security.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,11 +21,11 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired
-    JwtTokenUtil jwtTokenUtil;
+    private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     @Lazy
-    UserService userService;
+    private CustomUserDetailsService customUserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -34,13 +36,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
 
-            // ✅ 기존의 `extractUsername()` 대신 `getUsername()` 사용
             String username = jwtTokenUtil.getUsername(token);
 
             if (jwtTokenUtil.validateToken(token)) {
-                // ✅ 인증이 되어있지 않다면 인증 진행
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetails userDetails = userService.loadUserByUsername(username);
+                    UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+
+                    // 🔥 디버깅용 로그 추가
+                    System.out.println("🔥 JWT 인증된 사용자: " + userDetails.getUsername());
+                    if (userDetails instanceof CustomUserDetails custom) {
+                        System.out.println("🔥 CustomUserDetails ID: " + custom.getId());
+                    } else {
+                        System.out.println("❗ userDetails is not instance of CustomUserDetails");
+                    }
+
                     UsernamePasswordAuthenticationToken auth =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 

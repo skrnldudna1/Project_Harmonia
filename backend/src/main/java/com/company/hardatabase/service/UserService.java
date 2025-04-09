@@ -3,6 +3,7 @@ package com.company.hardatabase.service;
 import com.company.hardatabase.config.CloudinaryUploader;
 import com.company.hardatabase.domain.User;
 import com.company.hardatabase.repository.UserRepository;
+import com.company.hardatabase.security.CustomUserDetails;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -60,10 +61,7 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Not found"));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        return new CustomUserDetails(user);
     }
 
     public User registerUser(String username, String rawPassword, String email, String nickname) {

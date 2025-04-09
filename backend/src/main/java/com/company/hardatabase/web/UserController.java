@@ -98,7 +98,7 @@ public class UserController {
     @PatchMapping("/{userId}/nickname")
     @PreAuthorize("isAuthenticated()") // 인증된 사용자만 변경 가능
     public ResponseEntity<?> updateNickname(
-            @PathVariable Long userId,
+            @PathVariable("userId") Long userId,
             @RequestBody Map<String, String> request,
             @AuthenticationPrincipal UserDetails userDetails) {
 
