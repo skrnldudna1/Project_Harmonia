@@ -24,18 +24,23 @@ const CreationsTab = () => {
 
   useEffect(() => {
     if (!user) return;
-
+  
     const fetchMyPosts = async () => {
       try {
+        const token = localStorage.getItem("token"); // 로그인 시 저장한 JWT 토큰
+  
         const res = await axios.get(`${SERVER_URL}/api/posts/my`, {
-          withCredentials: true, // 세션 기반 로그인일 경우 필요
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
+  
         setPosts(res.data);
       } catch (err) {
         console.error("내 게시글 불러오기 실패 💥", err);
       }
     };
-
+  
     fetchMyPosts();
   }, [user]);
 

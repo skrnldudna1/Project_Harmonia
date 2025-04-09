@@ -26,11 +26,15 @@ const PostCreate = () => {
   const handleImageUpload = async () => {
     if (!selectedFile) return;
     const formData = new FormData();
+    const token = localStorage.getItem("token"); 
     formData.append("file", selectedFile);
     try {
-      const res = await axios.post(`${SERVER_URL}/api/auth/uploads`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+        const res = await axios.post(`${SERVER_URL}/api/auth/uploads`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          });
       setUploadedUrl(res.data.imageUrl);
     } catch (err) {
       console.error("업로드 실패", err);
@@ -38,18 +42,39 @@ const PostCreate = () => {
   };
 
   const handleSubmit = async () => {
-    if (!uploadedUrl) return alert("이미지 업로드가 필요해!");
+    if (!selectedFile) return alert("이미지를 선택해줘!");
+  
+    const formData = new FormData();
+    const token = localStorage.getItem("token");
+    formData.append("file", selectedFile);
+  
     try {
+      // 1️⃣ 이미지 먼저 업로드
+      const uploadRes = await axios.post(`${SERVER_URL}/api/auth/uploads`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const imageUrl = uploadRes.data.imageUrl;
+  
+      // 2️⃣ 이미지 업로드 성공 후 게시글 등록
       await axios.post(`${SERVER_URL}/api/posts`, {
         title,
         caption,
-        imageUrl: uploadedUrl,
+        imageUrl,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ 이거 꼭!!
+        },
       });
+  
       alert("게시글이 등록되었어!");
       navigate("/");
     } catch (err) {
-      console.error("게시글 등록 실패", err);
-      alert("오류가 났어 ㅠㅠ");
+      console.error("등록 중 오류 발생", err);
+      alert("등록에 실패했어 ㅠㅠ");
     }
   };
 
@@ -75,12 +100,9 @@ const PostCreate = () => {
       <Input type="file" onChange={handleFileChange} />
       {previewImg && <img src={previewImg} alt="미리보기" style={{ width: "100%", marginTop: 10 }} />}
       <Box sx={{ mt: 2 }}>
-        <Button variant="outlined" onClick={handleImageUpload} disabled={!selectedFile}>
-          이미지 업로드
-        </Button>
-        <Button variant="contained" sx={{ ml: 2 }} onClick={handleSubmit} disabled={!uploadedUrl}>
-          게시글 등록
-        </Button>
+      <Button variant="contained" sx={{ ml: 2 }} onClick={handleSubmit} disabled={!selectedFile}>
+       게시글 등록
+      </Button>
       </Box>
     </Box>
   );

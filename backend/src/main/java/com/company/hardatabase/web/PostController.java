@@ -1,9 +1,11 @@
 package com.company.hardatabase.web;
 
 import com.company.hardatabase.domain.Post;
+import com.company.hardatabase.dto.PostRequest;
 import com.company.hardatabase.repository.PostProjection;
 import com.company.hardatabase.security.CustomUserDetails;
 import com.company.hardatabase.service.PostService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/posts")
 @CrossOrigin(origins = "http://localhost:3001")
+
 public class PostController {
     private final PostService postService;
 
@@ -25,9 +28,19 @@ public class PostController {
         return ResponseEntity.ok(postService.getAllPosts());
     }
 
+    // 작성
     @PostMapping
-    public ResponseEntity<Post> createPost(@RequestBody Post post) {
-        return ResponseEntity.ok(postService.createPost(post));
+    public ResponseEntity<Post> createPost(
+            @RequestBody PostRequest postRequest,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        System.out.println("userDetails: " + userDetails);
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Post post = postService.createPost(userDetails.getId(), postRequest);
+        return ResponseEntity.ok(post);
     }
 
     @DeleteMapping("/{id}")
@@ -51,4 +64,8 @@ public class PostController {
         return ResponseEntity.ok(postService.findPostsByUserId(userDetails.getId()));
     }
 
+
+
+
 }
+
