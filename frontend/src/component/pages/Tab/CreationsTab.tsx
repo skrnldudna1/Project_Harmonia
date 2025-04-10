@@ -29,12 +29,11 @@ const CreationsTab = () => {
       try {
         const token = localStorage.getItem("token");
 
-        const res = await axios
-        .get(`${import.meta.env.VITE_API_BASE_URL}/api/likes/my`, {
+        const res = await axios.get(`${SERVER_URL}/api/posts/my`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
-        })
+        });
 
         setPosts(res.data);
       } catch (err) {
