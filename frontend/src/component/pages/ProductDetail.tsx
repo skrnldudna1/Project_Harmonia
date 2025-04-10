@@ -22,25 +22,30 @@ const ProductDetail = () => {
 
 
   useEffect(() => {
-    console.log("🧩 useEffect 진입");
-
     const fetchProduct = async () => {
       try {
         const url = `${import.meta.env.VITE_API_BASE_URL}/api/posts/${id}`;
-        console.log("👉 요청 URL:", url);
-
-        const res = await axios.get(url);
-        console.log("📦 받아온 product 데이터", res.data);
+        const token = localStorage.getItem("token");
+        const res = await axios.get(url,
+          {
+            headers: {
+              Authorization: token ? `Bearer ${token}` : '',
+            },
+          });
+        console.log("불러온 데이터:", res.data); // ← 여기에 liked도 잘 찍히는지 확인
         setProduct(res.data);
+        setLiked(res.data.liked); // <- 여기에 liked가 false인지 true인지 확인!!
+        console.log("불러온 liked 값:", res.data.liked);
       } catch (err) {
         console.error("❌ 게시글 불러오기 실패:", err);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchProduct();
   }, [id]);
+  
 
   
   // 컴포넌트 마운트 시 최상단으로 이동 + 이미지 페이드 인 효과
@@ -50,11 +55,26 @@ const ProductDetail = () => {
   }, []);
 
   // 좋아요 버튼 클릭 시 애니메이션 효과 추가
-  const toggleLike = () => {
-    setLiked(!liked);
-    setAnimate(true);
-    setTimeout(() => setAnimate(false), 300);
-  };
+      const toggleLike = async () => {
+        try {
+          const res = await axios.post(
+            `${import.meta.env.VITE_API_BASE_URL}/api/likes/${id}`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+          console.log("✅ 좋아요 토글 완료", res.data);
+      
+          setLiked(prev => !prev);
+          setAnimate(true);
+          setTimeout(() => setAnimate(false), 300);
+        } catch (err) {
+          console.error("❌ 좋아요 요청 실패", err);
+        }
+      };
 
   
 
@@ -101,23 +121,27 @@ const ProductDetail = () => {
       <Box sx={{ flex: 1 }}>
         {/* 🔹 좋아요 버튼 */}
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-          <IconButton
-            onClick={toggleLike}
-            sx={{
-              width: 48,
-              height: 48,
-              transition: "transform 0.3s ease-in-out, opacity 0.2s ease-in-out",
-              transform: animate ? "scale(1.4)" : "scale(1)",
-              opacity: animate ? 0.8 : 1,
-            }}
-          >
+        <IconButton
+          onClick={toggleLike}
+          sx={{
+            width: 48,
+            height: 48,
+            transition: "transform 0.3s ease-in-out, opacity 0.2s ease-in-out",
+            transform: animate ? "scale(1.4)" : "scale(1)",
+            opacity: animate ? 0.8 : 1,
+          }}
+        >
+          {/* ✅ 조건 분기 로딩 끝났을 때만 렌더링하게끔 */}
+          {!loading && (
             <img
+              key={liked ? "liked" : "not-liked"} // 💡 렌더링 강제
               src={liked ? "/images/like_filled.png" : "/images/like.png"}
               alt="Like"
               width="40px"
               height="40px"
             />
-          </IconButton>
+          )}
+    </IconButton>
 
           <IconButton>
             <ShareIcon />

@@ -6,6 +6,7 @@ import styles from "./MyPage.module.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../component/AuthProvider"; // ✅ useAuth 추가
 import CreationsTab from "./Tab/CreationsTab";
+import MyLikesTab from "./Tab/MyLikesTab";
 import api from "../../api/axios";
 import { getUserProfile } from "../../api/auth";
 
@@ -215,13 +216,14 @@ const MyPage = () => {
           },
         }}
       >
-        <Tab label="Creations" />
-        <Tab label="Gallery" />
-        <Tab label="Likes" />
-        <Tab label="Followers" />
+        <Tab label="Creations" />   {/* 0 */}
+        <Tab label="Gallery" />     {/* 1 */}
+        <Tab label="Likes" />       {/* 2 ✅ 이게 빠졌던 거야! */}
+        <Tab label="Followers" />   {/* 3 */}
       </Tabs>
       {/* 탭별 컴포넌트 불러오기 */}
       {tabValue === 0 && <CreationsTab />}
+      {tabValue === 2 && <MyLikesTab />}    
 
     </Box>
 

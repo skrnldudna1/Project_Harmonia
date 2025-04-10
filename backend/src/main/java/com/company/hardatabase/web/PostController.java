@@ -1,32 +1,38 @@
 package com.company.hardatabase.web;
 
 import com.company.hardatabase.domain.Post;
+import com.company.hardatabase.domain.User;
 import com.company.hardatabase.dto.PostRequest;
+import com.company.hardatabase.dto.PostResponse;
 import com.company.hardatabase.repository.PostProjection;
 import com.company.hardatabase.security.CustomUserDetails;
 import com.company.hardatabase.service.PostService;
+import com.company.hardatabase.service.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/posts")
 @CrossOrigin(origins = "http://localhost:3001")
-
+@Slf4j
+@RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
+    private final UserService userService;
 
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
 
-    @GetMapping
-    public ResponseEntity<List<PostProjection>> getPosts() {
-        return ResponseEntity.ok(postService.getAllPosts());
-    }
+//    @GetMapping
+//    public ResponseEntity<List<PostProjection>> getPosts() {
+//        return ResponseEntity.ok(postService.getAllPosts());
+//    }
 
     // 작성
     @PostMapping
@@ -52,9 +58,17 @@ public class PostController {
 
     // 게시글
     @GetMapping("/{id}")
-    public ResponseEntity<PostProjection> getPostById(@PathVariable("id") Long id) {
+    public ResponseEntity<PostResponse> getPostById(
+            @PathVariable("id") Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Long userId = userDetails == null ? null : userDetails.getId();
+
         return postService.getPostById(id)
-                .map(ResponseEntity::ok)
+                .map(projection -> {
+                    PostResponse response = postService.convertToPostResponse(projection, userId);
+                    return ResponseEntity.ok(response);
+                })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -65,7 +79,17 @@ public class PostController {
     }
 
 
+    @GetMapping
+    public ResponseEntity<List<PostResponse>> getAllPosts(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long userId = (userDetails != null) ? userDetails.getId() : null;
 
+        List<PostProjection> projections = postService.getAllPosts(); // projection 가져옴
+        List<PostResponse> responseList = projections.stream()
+                .map(p -> postService.convertToPostResponse(p, userId)) // liked 포함!
+                .toList();
+
+        return ResponseEntity.ok(responseList);
+    }
 
 }
 
