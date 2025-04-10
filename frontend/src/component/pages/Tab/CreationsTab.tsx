@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Typography, Grid, IconButton } from "@mui/material";
+import { Box, Typography, Grid, IconButton, Card, CardMedia, CardContent } from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -24,23 +24,23 @@ const CreationsTab = () => {
 
   useEffect(() => {
     if (!user) return;
-  
+
     const fetchMyPosts = async () => {
       try {
-        const token = localStorage.getItem("token"); // 로그인 시 저장한 JWT 토큰
-  
+        const token = localStorage.getItem("token");
+
         const res = await axios.get(`${SERVER_URL}/api/posts/my`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-  
+
         setPosts(res.data);
       } catch (err) {
         console.error("내 게시글 불러오기 실패 💥", err);
       }
     };
-  
+
     fetchMyPosts();
   }, [user]);
 
@@ -59,18 +59,33 @@ const CreationsTab = () => {
       ) : (
         <Grid container spacing={2}>
           {posts.map((post) => (
-            <Grid item xs={4} key={post.id}>
-              <img
-                src={post.imageUrl}
-                alt={post.title}
-                style={{ width: "100%", borderRadius: "8px" }}
-              />
-              <Typography variant="subtitle1" sx={{ mt: 1 }}>
-                {post.title}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {post.caption}
-              </Typography>
+            <Grid item xs={12} sm={6} md={4} key={post.id}>
+              <Card
+                onClick={() => navigate(`/product/${post.id}`)}
+                sx={{
+                  cursor: "pointer",
+                  transition: "transform 0.3s",
+                  "&:hover": {
+                    transform: "scale(1.02)",
+                  },
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  height="550"
+                  image={post.imageUrl}
+                  alt={post.title}
+                  sx={{ objectFit: "cover" }}
+                />
+                <CardContent>
+                  <Typography variant="h6" noWrap>
+                    {post.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" noWrap>
+                    {post.caption}
+                  </Typography>
+                </CardContent>
+              </Card>
             </Grid>
           ))}
         </Grid>

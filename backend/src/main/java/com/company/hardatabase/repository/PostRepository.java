@@ -59,6 +59,25 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         ORDER BY p.createdAt DESC
     """)
     List<PostProjection> findAllByUserId(@Param("userId") Long userId);
+
+
+    //좋아요
+    @Query("""
+    SELECT 
+        p.id AS id,
+        p.title AS title,
+        p.imageUrl AS imageUrl,
+        p.caption AS caption,
+        p.createdAt AS createdAt,
+        u.nickname AS nickname,
+        u.profileImg AS profileImg
+    FROM Post p
+    JOIN p.user u
+    JOIN Like l ON l.post = p
+    WHERE l.user.id = :userId
+    ORDER BY p.createdAt DESC
+""")
+    List<PostProjection> findLikedPostsByUserId(@Param("userId") Long userId);
 }
 
 
