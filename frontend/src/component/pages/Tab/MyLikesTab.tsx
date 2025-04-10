@@ -15,7 +15,10 @@ const MyLikesTab = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
-      .then((res) => setLikedPosts(res.data))
+      .then((res) => {
+        console.log("🎯 좋아요 응답 확인:", res.data); // 이거 찍어봐!
+        setLikedPosts(Array.isArray(res.data) ? res.data : []);
+      })
       .catch((err) => console.error("좋아요 가져오기 실패", err));
   }, []);
 
