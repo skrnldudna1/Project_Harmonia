@@ -9,8 +9,7 @@ const MyLikesTab = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get("/api/likes/my", {
+    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/likes/my`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
