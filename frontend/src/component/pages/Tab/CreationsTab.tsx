@@ -45,7 +45,7 @@ const CreationsTab = () => {
   }, [user]);
 
   return (
-    <Box>
+    <Box sx={{ padding: 3 }}>
       <Box display="flex" justifyContent="flex-end" mb={2}>
         <IconButton onClick={() => navigate("/post/create")}>
           <AddPhotoAlternateIcon />
@@ -57,31 +57,75 @@ const CreationsTab = () => {
           아직 작성한 게시글이 없어요 😢
         </Typography>
       ) : (
-        <Grid container spacing={2}>
+        <Grid container spacing={4} justifyContent="center">
           {posts.map((post) => (
-            <Grid item xs={12} sm={6} md={4} key={post.id}>
+            <Grid item key={post.id}>
               <Card
                 onClick={() => navigate(`/product/${post.id}`)}
                 sx={{
+                  width: 300,
+                  height: 560,
                   cursor: "pointer",
                   transition: "transform 0.3s",
                   "&:hover": {
-                    transform: "scale(1.02)",
+                    transform: "scale(1.03)",
                   },
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
                 }}
               >
                 <CardMedia
                   component="img"
-                  height="550"
                   image={post.imageUrl}
                   alt={post.title}
-                  sx={{ objectFit: "cover" }}
+                  sx={{
+                    height: 500,
+                    objectFit: "cover",
+                  }}
                 />
-                <CardContent>
-                  <Typography variant="h6" noWrap>
+                <CardContent
+                  sx={{
+                    px: 2,
+                    py: 1,
+                    height: 70,
+                    boxSizing: "border-box",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    fontWeight="bold"
+                    sx={{
+                      fontSize: "1.1rem",
+                      lineHeight: 1.2,
+                      height: "50%",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 1,
+                      WebkitBoxOrient: "vertical",
+                    }}
+                  >
                     {post.title}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" noWrap>
+
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      fontSize: "0.875rem",
+                      lineHeight: 1.2,
+                      height: "50%",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 1,
+                      WebkitBoxOrient: "vertical",
+                    }}
+                  >
                     {post.caption}
                   </Typography>
                 </CardContent>

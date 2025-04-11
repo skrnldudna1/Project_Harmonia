@@ -4,14 +4,15 @@ import { Box, Typography, Paper, Avatar, IconButton, TextField, Dialog } from "@
 import ShareIcon from "@mui/icons-material/Share";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import axios from "axios";
+import { Button } from "@mui/material";
 
 
 const ProductDetail = () => {
   const { id } = useParams();
-  console.log("🔥 가져온 id:", id);
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  
   
 
   // 좋아요 상태 & 애니메이션 상태 추가
@@ -19,6 +20,14 @@ const ProductDetail = () => {
   const [animate, setAnimate] = useState(false);
   const [fadeIn, setFadeIn] = useState(false);
   const [openModal, setOpenModal] = useState(false); // ✅ 이미지 모달 상태 추가
+
+
+  //댓글
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [editedContent, setEditedContent] = useState("");
+  const [user, setUser] = useState(null);
 
 
   useEffect(() => {
@@ -32,7 +41,6 @@ const ProductDetail = () => {
               Authorization: token ? `Bearer ${token}` : '',
             },
           });
-        console.log("불러온 데이터:", res.data); // ← 여기에 liked도 잘 찍히는지 확인
         setProduct(res.data);
         setLiked(res.data.liked); // <- 여기에 liked가 false인지 true인지 확인!!
         console.log("불러온 liked 값:", res.data.liked);
@@ -76,6 +84,101 @@ const ProductDetail = () => {
         }
       };
 
+
+
+  // 댓글
+  useEffect(() => {
+    if (!id) return;
+    axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/comments/${id}`)
+      .then(res => setComments(res.data))
+      .catch(err => console.error("댓글 조회 실패", err));
+  }, [id]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(res => setUser(res.data))
+      .catch(err => console.error("사용자 정보 조회 실패", err));
+    }
+  }, []);
+
+
+  // 댓글
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleCommentSubmit = async () => {
+    if (!newComment.trim() || isSubmitting) return;
+  
+    setIsSubmitting(true);
+    try {
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/comments/${id}`, {
+        content: newComment,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+  
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/comments/${id}`);
+      setComments(res.data);
+      setNewComment("");
+    } catch (err) {
+      console.error("댓글 등록 실패", err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleEditClick = (id, content) => {
+    setEditingId(id);
+    setEditedContent(content);
+  };
+
+  //댓글 삭제
+  const handleCommentDelete = async (commentId: number) => {
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/comments/${commentId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+  
+      // 삭제된 댓글을 제외한 목록으로 갱신
+      setComments(prev => prev.filter(comment => comment.id !== commentId));
+    } catch (err) {
+      console.error("댓글 삭제 실패", err);
+    }
+  };
+
+  //댓글 수정
+  const handleEditConfirm = async (commentId) => {
+    if (!editedContent.trim()) return;
+  
+    try {
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/comments/${commentId}`, {
+        content: editedContent,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+  
+      // 수정 완료되면 comment 목록도 갱신
+      setComments((prev) =>
+        prev.map((c) =>
+          c.id === commentId ? { ...c, content: editedContent } : c
+        )
+      );
+      setEditingId(null);
+      setEditedContent("");
+    } catch (err) {
+      console.error("댓글 수정 실패", err);
+    }
+  };
+
   
 
   if (loading) {
@@ -86,8 +189,6 @@ const ProductDetail = () => {
     return <Box sx={{ padding: "40px", textAlign: "center" }}><Typography>게시글이 없습니다.</Typography></Box>;
   }
 
-
-// 데이터 불러오자마자 확인해보자
 
 
   return (
@@ -178,17 +279,120 @@ const ProductDetail = () => {
 
         {/* 댓글 입력창 */}
         <Box sx={{ mt: 4 }}>
-          <Typography variant="h6" fontWeight="bold">어떠셨나요?</Typography>
-          <TextField fullWidth placeholder="댓글을 추가하고 대화를 시작하세요." variant="outlined" sx={{ mt: 2 }} />
-        </Box>
-      </Box>
+          <Typography variant="h6" fontWeight="bold" gutterBottom>
+            어떠셨나요?
+          </Typography>
 
-      {/* ✅ 이미지 클릭 시 원본 보기 모달 */}
-      <Dialog open={openModal} onClose={() => setOpenModal(false)} maxWidth="lg">
-        <Box sx={{ p: 2, display: "flex", justifyContent: "center", alignItems: "center" }}>
-          <img src={product.imageUrl} alt={product.title} style={{ width: "100%", height: "auto", maxWidth: "900px" }} />
+          <TextField
+            fullWidth
+            placeholder="댓글을 추가하고 대화를 시작하세요."
+            variant="outlined"
+            sx={{ mt: 2 }}
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleCommentSubmit();
+              }
+            }}
+          />
+
+          {/* 댓글 목록 출력 */}
+          <Box sx={{ mt: 3 }}>
+            {comments.length === 0 ? (
+              <Typography color="text.secondary">댓글이 아직 없어요.</Typography>
+            ) : (
+              comments.map((comment) => (
+                <Box
+                key={comment.id || `${comment.nickname}-${Math.random()}`}
+                sx={{ mb: 2, p: 1.5, border: "1px solid #eee", borderRadius: 2 }}
+                >
+                  <Typography variant="subtitle2" fontWeight="bold">
+                    {comment.nickname} 님
+                  </Typography>
+
+                  {editingId === comment.id ? (
+                    <>
+                      <TextField
+                        fullWidth
+                        value={editedContent}
+                        onChange={(e) => setEditedContent(e.target.value)}
+                        size="small"
+                        sx={{ mt: 1 }}
+                      />
+                      <Box sx={{ mt: 1, display: "flex", gap: 1 }}>
+                        <Button
+                          size="small"
+                          variant="contained"
+                          onClick={() => handleEditConfirm(comment.id)}
+                        >
+                          저장
+                        </Button>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          onClick={() => setEditingId(null)}
+                        >
+                          취소
+                        </Button>
+                      </Box>
+                    </>
+                  ) : (
+                    <>
+                      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                        {comment.content}
+                      </Typography>
+                      <Typography variant="caption" color="gray">
+                        {new Date(comment.createdAt).toLocaleString("ko-KR")}
+                      </Typography>
+
+                      
+                      {(user?.id === comment.userId || user?.id === product.userId) && (
+                        <Box sx={{ mt: 1, display: "flex", gap: 1 }}>
+                          {/* ✅ 댓글 작성자만 수정 가능 */}
+                          {user?.id === comment.userId && (
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              onClick={() => handleEditClick(comment.id, comment.content)}
+                            >
+                              수정
+                            </Button>
+                          )}
+                           {(user?.id === comment.userId || user?.id === product.userId) && (
+                          <Button
+                          size="small"
+                          variant="outlined"
+                          color="error"
+                          onClick={() => handleCommentDelete(comment.id)}
+                        >
+                          삭제
+                        </Button>
+                           )}
+                        </Box>
+                      )}
+                    </>
+                  )}
+                </Box>
+              ))
+            )}
+          </Box>
         </Box>
-      </Dialog>
+
+        {/* ✅ 이미지 클릭 시 원본 보기 모달 */}
+        <Dialog open={openModal} onClose={() => setOpenModal(false)} maxWidth="lg">
+          <Box
+            sx={{ p: 2, display: "flex", justifyContent: "center", alignItems: "center" }}
+          >
+            <img
+              src={product.imageUrl}
+              alt={product.title}
+              style={{ width: "100%", height: "auto", maxWidth: "900px" }}
+            />
+          </Box>
+        </Dialog>
+      </Box>
     </Box>
   );
 };
