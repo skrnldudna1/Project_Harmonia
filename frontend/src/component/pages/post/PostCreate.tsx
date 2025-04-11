@@ -79,8 +79,8 @@ const PostCreate = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 600, mx: "auto", mt: 5 }}>
-      <Typography variant="h5" gutterBottom>게시글 작성</Typography>
+    <Box sx={{ maxWidth: 800, mx: "auto", mt: 5 }}>
+      <Typography variant="h5" fontWeight="bold"  gutterBottom></Typography>
       <TextField
         label="제목"
         fullWidth
@@ -99,9 +99,9 @@ const PostCreate = () => {
       />
       <Input type="file" onChange={handleFileChange} />
       {previewImg && <img src={previewImg} alt="미리보기" style={{ width: "100%", marginTop: 10 }} />}
-      <Box sx={{ mt: 2 }}>
+      <Box sx={{ mt: 4, display: "flex", justifyContent: "flex-end" }}>
       <Button variant="contained" sx={{ ml: 2 }} onClick={handleSubmit} disabled={!selectedFile}>
-       게시글 등록
+       업로드
       </Button>
       </Box>
     </Box>
