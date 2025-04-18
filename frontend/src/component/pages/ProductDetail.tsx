@@ -42,6 +42,7 @@ const ProductDetail = () => {
             },
           });
         setProduct(res.data);
+        console.log("🔥 게시글 정보:", res.data);
         setLiked(res.data.liked); // <- 여기에 liked가 false인지 true인지 확인!!
         console.log("불러온 liked 값:", res.data.liked);
       } catch (err) {
@@ -97,13 +98,34 @@ const ProductDetail = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/me`, {
+      axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(res => setUser(res.data))
       .catch(err => console.error("사용자 정보 조회 실패", err));
     }
   }, []);
+
+
+  // 게시글 삭제
+const handleDelete = async () => {
+  const confirmDelete = window.confirm("정말 삭제하시겠어요?");
+  if (!confirmDelete) return;
+
+  try {
+    const token = localStorage.getItem("token");
+    await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/posts/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    alert("게시글이 삭제되었습니다.");
+    navigate("/"); // 혹은 게시글 목록 페이지
+  } catch (err) {
+    console.error("게시글 삭제 실패", err);
+    alert("삭제 중 오류가 발생했어요 🥲");
+  }
+};
+
 
 
   // 댓글
@@ -271,6 +293,19 @@ const ProductDetail = () => {
             </Typography>
           </Box>
         </Box>
+
+
+        {user?.id === product.userId && (
+          <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
+            <Button variant="outlined" color="primary" onClick={() => navigate(`/post/edit/${id}`)}>
+              게시글 수정
+            </Button>
+            <Button onClick={handleDelete} color="error" variant="outlined">
+              게시글 삭제
+            </Button>
+          </Box>
+        )}
+
 
         {/* 설명 */}
         <Typography variant="body1" sx={{ mt: 3 }}>

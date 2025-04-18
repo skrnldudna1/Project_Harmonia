@@ -16,4 +16,5 @@ public class PostResponse {
     private String profileImg;
     private LocalDateTime createdAt;
     private boolean liked;
+    private Long userId;
 }

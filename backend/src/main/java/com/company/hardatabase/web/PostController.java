@@ -64,9 +64,9 @@ public class PostController {
 
         Long userId = userDetails == null ? null : userDetails.getId();
 
-        return postService.getPostById(id)
-                .map(projection -> {
-                    PostResponse response = postService.convertToPostResponse(projection, userId);
+        return postService.getFullPostById(id) // ✅ projection 말고 진짜 Post!
+                .map(post -> {
+                    PostResponse response = postService.convertToPostResponse(post, userId);
                     return ResponseEntity.ok(response);
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());

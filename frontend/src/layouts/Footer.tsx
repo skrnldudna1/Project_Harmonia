@@ -25,7 +25,7 @@ const Footer = () => {
           ONLINE BUSINESS L. 2025-서울-12345 [사업자정보확인]
         </Typography>
         <Typography variant="body2">
-          ADD : ***REMOVED*** 서울특별시 강남구 테헤란로 12길 34 A층
+          ADD : 7070 서울특별시 강남구 테헤란로 12길 34 A층
         </Typography>
         <Typography variant="body2">TEL : 02 - 1234 - 456</Typography>
         <Typography variant="body2">
