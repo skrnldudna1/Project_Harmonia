@@ -11,6 +11,17 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
+    // 검색
+    @Query("""
+    SELECT p FROM Post p
+    JOIN p.user u
+    WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
+       OR LOWER(u.nickname) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    ORDER BY p.createdAt DESC
+""")
+    List<Post> searchByTitleOrNickname(@Param("keyword") String keyword);
+
+
     // 전체 게시글 조회 (닉네임 포함)
     @Query("""
         SELECT 

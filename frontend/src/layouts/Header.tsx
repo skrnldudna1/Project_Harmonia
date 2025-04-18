@@ -2,16 +2,44 @@ import { AppBar, Avatar, Box, Container, Drawer, IconButton, Typography } from "
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../component/AuthProvider";
+import { TextField } from "@mui/material";
+
+//검색 모달
+<Box sx={{
+  '@keyframes fadeSlide': {
+    from: { opacity: 0, transform: 'translateY(-10px)' },
+    to: { opacity: 1, transform: 'translateY(0)' },
+  },
+}}>
+</Box>
+
 
 const Header = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false); 
   const { user, logout } = useAuth();  // ✅ AuthProvider에서 상태 가져오기
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
+
+  // 검색
+  const toggleSearchBar = () => {
+    setIsSearchOpen((prev) => !prev);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (!searchInput.trim()) return;
+    navigate(`/search?keyword=${encodeURIComponent(searchInput.trim())}`);
+    setSearchInput("");
+    setIsSearchOpen(false); // 검색 후 닫기
+  };
+
+  
 
   return (
     <>
@@ -96,9 +124,11 @@ const Header = () => {
           </Box>
 
           <Box sx={{ position: "absolute", right: "10px", display: "flex", gap: 2, alignItems: "center" }}>
-            <IconButton onClick={() => navigate("/search")} sx={{ padding: 0 }}>
-              <img src="/images/돋보기.png" alt="검색" style={{ width: "22px", height: "30px", cursor: "pointer" }} />
-            </IconButton>
+          <IconButton onClick={() => setIsSearchOpen(true)} sx={{ padding: 0 }}>
+            <img src="/images/돋보기.png" alt="검색" style={{ width: "22px", height: "30px" }} />
+          </IconButton>
+            
+
             <IconButton onClick={() => navigate(user ? "/user" : "/login")} sx={{ padding: 0 }}>
             <Avatar
               src={
@@ -165,7 +195,55 @@ const Header = () => {
             </Box>
           </Box>
         </Box>
+        
       </Drawer>
+
+      {isSearchOpen && (
+  <Box
+    sx={{
+      position: "fixed",
+      top: "100px",
+      left: 0,
+      width: "100%",
+      display: "flex",
+      justifyContent: "center",
+      zIndex: 200,
+      animation: "fadeSlide 0.4s ease-out",
+    }}
+  >
+    <Box
+      component="form"
+      onSubmit={handleSearchSubmit}
+      sx={{
+        backgroundColor: "#fff",
+        border: "1px solid #ccc",
+        borderRadius: "30px",
+        padding: "10px 20px",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
+        minWidth: "300px",
+        maxWidth: "80%",
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}
+    >
+      <TextField
+        placeholder="검색어를 입력하세요"
+        variant="standard"
+        value={searchInput}
+        onChange={(e) => setSearchInput(e.target.value)}
+        fullWidth
+        InputProps={{ disableUnderline: true }}
+        autoFocus
+      />
+      <IconButton onClick={() => setIsSearchOpen(false)}>
+        ❌
+      </IconButton>
+    </Box>
+  </Box>
+)}
+
+
     </>
   );
 };

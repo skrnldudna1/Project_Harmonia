@@ -91,5 +91,17 @@ public class PostController {
         return ResponseEntity.ok(responseList);
     }
 
+
+    //검색
+    @GetMapping("/search")
+    public ResponseEntity<List<PostResponse>> searchPosts(
+            @RequestParam("keyword") String keyword,  // ← 이렇게 명시적으로!
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Long userId = userDetails != null ? userDetails.getId() : null;
+        List<PostResponse> results = postService.searchByTitle(keyword, userId);
+
+        return ResponseEntity.ok(results);
+    }
 }
 
