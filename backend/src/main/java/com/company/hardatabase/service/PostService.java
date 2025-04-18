@@ -65,6 +65,11 @@ public class PostService {
         return postRepository.findPostProjectionById(id);
     }
 
+    // 진짜 Post 객체로 가져오는 메서드
+    public Optional<Post> getFullPostById(Long id) {
+        return postRepository.findById(id);
+    }
+
 
     // 마이페이지용
     public List<PostProjection> findPostsByUserId(Long userId) {
@@ -105,6 +110,7 @@ public class PostService {
             response.setImageUrl(post.getImageUrl());
             response.setCaption(post.getCaption());
             response.setCreatedAt(post.getCreatedAt());
+            response.setUserId(post.getUser().getId());
 
             if (post.getUser() != null) {
                 response.setNickname(post.getUser().getNickname());
@@ -120,4 +126,28 @@ public class PostService {
             return response;
         }).toList();
     }
+
+
+    // 게시글 수정,삭제
+    public PostResponse convertToPostResponse(Post post, Long loginUserId) {
+        PostResponse response = new PostResponse();
+        response.setId(post.getId());
+        response.setTitle(post.getTitle());
+        response.setImageUrl(post.getImageUrl());
+        response.setCaption(post.getCaption());
+        response.setCreatedAt(post.getCreatedAt());
+
+        if (post.getUser() != null) {
+            response.setNickname(post.getUser().getNickname());
+            response.setProfileImg(post.getUser().getProfileImg());
+
+            response.setUserId(post.getUser().getId());
+        }
+
+        boolean isLiked = (loginUserId != null) && likeRepository.existsByPostIdAndUserId(post.getId(), loginUserId);
+        response.setLiked(isLiked);
+
+        return response;
+    }
+
 }
