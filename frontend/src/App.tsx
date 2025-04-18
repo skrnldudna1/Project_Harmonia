@@ -10,6 +10,8 @@ import { AuthProvider, useAuth } from "./component/AuthProvider";
 import CreationsTab from "./component/pages/Tab/CreationsTab";
 import ProductDetail from "./component/pages/ProductDetail";
 import PostCreate from "./component/pages/post/PostCreate";
+import SearchPage from "./component/pages/SearchPage"; 
+
 
 const queryClient = new QueryClient();
 
@@ -41,6 +43,7 @@ function MainRouter() {
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
           <Route path="/post/create" element={<PostCreate />} />
+          <Route path="/search" element={<SearchPage />} />
         </Route>
       </Routes>
     </>

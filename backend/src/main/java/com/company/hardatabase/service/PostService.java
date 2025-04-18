@@ -11,6 +11,7 @@ import com.company.hardatabase.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -91,5 +92,32 @@ public class PostService {
         return projections.stream()
                 .map(p -> convertToPostResponse(p, userId)) // 여기서 liked 처리까지 해줌
                 .toList();
+    }
+
+    //검색
+    public List<PostResponse> searchByTitle(String keyword, Long userId) {
+        List<Post> posts = postRepository.searchByTitleOrNickname(keyword); // 여기만 바뀜!
+
+        return posts.stream().map(post -> {
+            PostResponse response = new PostResponse();
+            response.setId(post.getId());
+            response.setTitle(post.getTitle());
+            response.setImageUrl(post.getImageUrl());
+            response.setCaption(post.getCaption());
+            response.setCreatedAt(post.getCreatedAt());
+
+            if (post.getUser() != null) {
+                response.setNickname(post.getUser().getNickname());
+                response.setProfileImg(post.getUser().getProfileImg());
+            } else {
+                response.setNickname("알 수 없음");
+                response.setProfileImg(null);
+            }
+
+            boolean isLiked = (userId != null) && likeRepository.existsByPostIdAndUserId(post.getId(), userId);
+            response.setLiked(isLiked);
+
+            return response;
+        }).toList();
     }
 }
